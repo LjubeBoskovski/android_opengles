@@ -8,7 +8,9 @@ import com.ljubeboskovski.drmario.gfx.SurfaceView;
 
 public class MainActivity extends Activity {
 
-    private GLSurfaceView surfaceView;
+    private SurfaceView surfaceView;
+    private  com.ljubeboskovski.drmario.gfx.Renderer renderer;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -18,6 +20,17 @@ public class MainActivity extends Activity {
         // as the ContentView for this Activity.
         surfaceView = new SurfaceView(this);
         setContentView(surfaceView);
+
+        // Create an OpenGL ES 3.0 context
+        surfaceView.setEGLContextClientVersion(3);
+
+        renderer = new com.ljubeboskovski.drmario.gfx.Renderer(this);
+
+        // Set the Renderer for drawing on the GLSurfaceView
+        surfaceView.setRenderer(renderer, 1.0f);
+
+        // Render the view only when there is a change in the drawing data
+        // setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
     @Override

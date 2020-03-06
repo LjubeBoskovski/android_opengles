@@ -20,7 +20,7 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     private RawModel model;
 
-    Renderer(Context context) {
+    public Renderer(Context context) {
         this.context = context;
     }
 
@@ -29,7 +29,7 @@ public class Renderer implements GLSurfaceView.Renderer {
         GLES30.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 
         loader = new Loader();
-        shader = new StaticShader();
+        shader = new StaticShader(context);
 
 
         float[] vertices = {
@@ -89,46 +89,21 @@ public class Renderer implements GLSurfaceView.Renderer {
     private void draw() {
         shader.start();
 
-        prepare();
-        GLES30.glDrawElements(GLES30.GL_TRIANGLES, model.getIndexSize(), GLES30.GL_UNSIGNED_SHORT, 0);
-        cleanUp();
-
-        shader.stop();
-    }
-
-    private void prepare() {
-        // Get attribute and uniform IDs
-        int positionHandle = GLES30.glGetAttribLocation(shader.programID, "aPosition");
-        int colorHandle = GLES30.glGetAttribLocation(shader.programID, "aColor");
-
         // Bind the VBO and IBO
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, model.getVaoID());
         GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, model.getIaoID());
 
-        // Set the attributes and uniforms
-        GLES30.glVertexAttribPointer(positionHandle, Global.COORDS_PER_VERTEX, GLES30.GL_FLOAT,
-                false, Global.STRIDE, 0);
-        GLES30.glVertexAttribPointer(colorHandle, Global.COLOR_LENGTH, GLES30.GL_FLOAT,
-                false, Global.STRIDE,
-                Global.COORDS_PER_VERTEX * Global.BYTES_PER_FLOAT);
-
-        // Enable the attributes and uniforms
-        GLES30.glEnableVertexAttribArray(positionHandle);
-        GLES30.glEnableVertexAttribArray(colorHandle);
-    }
-
-    private void cleanUp() {
-        // Get attribute and uniform IDs
-        int positionHandle = GLES30.glGetAttribLocation(shader.programID, "aPosition");
-        int colorHandle = GLES30.glGetAttribLocation(shader.programID, "aColor");
-
-        // Disable vertex array
-        GLES30.glDisableVertexAttribArray(positionHandle);
-        GLES30.glDisableVertexAttribArray(colorHandle);
+        shader.bindAttributes();
+        GLES30.glDrawElements(GLES30.GL_TRIANGLES, model.getIndexSize(), GLES30.GL_UNSIGNED_SHORT, 0);
+        shader.unbindAttributes();
 
         // Unbind the VBO and IBO
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
         GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        shader.stop();
     }
+
+
 
 }

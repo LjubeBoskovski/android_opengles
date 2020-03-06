@@ -2,23 +2,27 @@ package com.ljubeboskovski.drmario.gfx;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.AttributeSet;
 
 public class SurfaceView extends GLSurfaceView {
 
-    private final com.ljubeboskovski.drmario.gfx.Renderer renderer;
+    private  com.ljubeboskovski.drmario.gfx.Renderer renderer;
+    private float density;
 
     public SurfaceView(Context context){
         super(context);
+    }
 
-        // Create an OpenGL ES 3.0 context
-        setEGLContextClientVersion(3);
+    public SurfaceView(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+    }
 
-        renderer = new com.ljubeboskovski.drmario.gfx.Renderer(context);
-
-        // Set the Renderer for drawing on the GLSurfaceView
-        setRenderer(renderer);
-
-        // Render the view only when there is a change in the drawing data
-        // setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+    // Hides superclass method.
+    public void setRenderer(com.ljubeboskovski.drmario.gfx.Renderer renderer, float density)
+    {
+        this.renderer = renderer;
+        this.density = density;
+        super.setRenderer(renderer);
     }
 }

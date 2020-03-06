@@ -3,18 +3,28 @@ package com.ljubeboskovski.drmario.gfx.shader;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import android.content.Context;
 import android.opengl.GLES30;
+
+import com.ljubeboskovski.drmario.util.RawResourceReader;
 
 public abstract class ShaderProgram {
 
-	public int programID;
-	private int vertexShaderID;
-	private int fragmentShaderID;
+    private Context context;
+	int programID;
+	int vertexShaderID;
+	int fragmentShaderID;
 
-	public ShaderProgram(final String vertexCode, final String fragmentCode) {
-        vertexShaderID = loadShader(GLES30.GL_VERTEX_SHADER, vertexCode);
-        fragmentShaderID = loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentCode);
+	// TODO:
+//	private List<Integer> attributes = new ArrayList<Integer>();
+
+	public ShaderProgram(Context context, int vertexResourceID, int fragmentResourceID) {
+	    this.context = context;
+        vertexShaderID = loadShader(GLES30.GL_VERTEX_SHADER, vertexResourceID);
+        fragmentShaderID = loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentResourceID);
         programID = GLES30.glCreateProgram();
         GLES30.glAttachShader(programID, vertexShaderID);
         GLES30.glAttachShader(programID, fragmentShaderID);
@@ -36,26 +46,27 @@ public abstract class ShaderProgram {
 
 	public void start() {
 		GLES30.glUseProgram(programID);
+		bindAttributes();
 	}
 
 	public void stop() {
+	    unbindAttributes();
 		GLES30.glUseProgram(0);
 	}
 
-	public void cleanUp() {
+//	public void cleanUp() {
 //		stop();
 //		glDetachShader(programID, vertexShaderID);
 //		glDetachShader(programID, fragmentShaderID);
 //		glDeleteShader(vertexShaderID);
 //		glDeleteShader(fragmentShaderID);
 //		glDeleteProgram(programID);
-	}
+//	}
 
-	protected void bindAttribute(int attribute, String variableName) {
-		GLES30.glBindAttribLocation(programID, attribute, variableName);
-	}
 
 	protected abstract void bindAttributes();
+
+	protected abstract void unbindAttributes();
 
 	private static int loadShader(String file, int type) {
 //		StringBuilder shaderSource = new StringBuilder();
@@ -83,7 +94,9 @@ public abstract class ShaderProgram {
 	}
 
 
-    public static int loadShader(int type, String shaderCode) {
+    private int loadShader(int type, int shaderResource) {
+        String shaderCode = RawResourceReader.readTextFileFromRawResource(context,
+                shaderResource);
 
         int shader = GLES30.glCreateShader(type);
 
