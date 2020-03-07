@@ -1,42 +1,41 @@
 package com.ljubeboskovski.drmario.gfx.shader;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 import android.content.Context;
 import android.opengl.GLES30;
 
-import com.ljubeboskovski.drmario.Global;
+import com.ljubeboskovski.drmario.gfx.Camera;
 import com.ljubeboskovski.drmario.util.RawResourceReader;
-
-import org.w3c.dom.Attr;
 
 public abstract class ShaderProgram {
 
     private Context context;
-    public int programID; //TODO: make not public
-    int vertexShaderID;
-    int fragmentShaderID;
+    private int programID;
 
-    public static LinkedList<Attribute> attributes = new LinkedList<Attribute>();
-    int stride;
+    private static LinkedList<Attribute> attributes = new LinkedList<Attribute>();
+
+    private int mvMatrixHandle;
+    private int mvpMatrixHandle;
 
 
-    public ShaderProgram(Context context, int vertexResourceID, int fragmentResourceID) {
+    ShaderProgram(Context context, int vertexResourceID, int fragmentResourceID) {
         this.context = context;
-        vertexShaderID = loadShader(GLES30.GL_VERTEX_SHADER, vertexResourceID);
-        fragmentShaderID = loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentResourceID);
+        int vertexShaderID = loadShader(GLES30.GL_VERTEX_SHADER, vertexResourceID);
+        int fragmentShaderID = loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentResourceID);
         programID = GLES30.glCreateProgram();
         GLES30.glAttachShader(programID, vertexShaderID);
         GLES30.glAttachShader(programID, fragmentShaderID);
         GLES30.glLinkProgram(programID);
         //TODO: get program information (glGetProgramiv()) and log errors
         GLES30.glValidateProgram(programID);
-        bindAttributes();
+//        bindAttributes();
+
+        mvpMatrixHandle = GLES30.glGetUniformLocation(programID, "u_MVPMatrix");
+        mvMatrixHandle = GLES30.glGetUniformLocation(programID, "u_MVMatrix");
     }
 
-    protected void addAttribute(String name, int size, int type, int typeSize, boolean normalized) {
+    void addAttribute(String name, int size, int type, int typeSize, boolean normalized) {
         int handle = GLES30.glGetAttribLocation(programID, name);
         int newOffset = 0;
         int newStride = size * typeSize;
@@ -54,13 +53,13 @@ public abstract class ShaderProgram {
         attributes.add(newAttribute);
     }
 
+
+
     public void start() {
         GLES30.glUseProgram(programID);
-        bindAttributes();
     }
 
     public void stop() {
-        unbindAttributes();
         GLES30.glUseProgram(0);
     }
 
@@ -74,12 +73,14 @@ public abstract class ShaderProgram {
 //	}
 
 
-    public void bindAttributes() {
+    public void bindAttributes(Camera camera) {
         for (Attribute attr : attributes) {
             GLES30.glVertexAttribPointer(attr.handle, attr.size, attr.type,
                     attr.normalized, attr.stride, attr.offset);
             GLES30.glEnableVertexAttribArray(attr.handle);
         }
+        GLES30.glUniformMatrix4fv(mvMatrixHandle, 1, false, camera.mvMatrix, 0);
+        GLES30.glUniformMatrix4fv(mvpMatrixHandle, 1, false, camera.mvpMatrix, 0);
     }
 
     public void unbindAttributes() {
