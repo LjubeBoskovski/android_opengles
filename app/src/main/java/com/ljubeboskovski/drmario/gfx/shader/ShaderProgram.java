@@ -15,7 +15,7 @@ import org.w3c.dom.Attr;
 public abstract class ShaderProgram {
 
     private Context context;
-    int programID;
+    public int programID; //TODO: make not public
     int vertexShaderID;
     int fragmentShaderID;
 
