@@ -1,7 +1,9 @@
 package com.ljubeboskovski.drmario.gfx;
 
 import com.ljubeboskovski.drmario.Global;
+import com.ljubeboskovski.drmario.game.entity.Block;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
+import com.ljubeboskovski.drmario.gfx.model.SingleColoredModel;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -19,28 +21,27 @@ public class Loader {
     private List<Integer> ibos = new ArrayList<Integer>();
     private List<Integer> textures = new ArrayList<Integer>();
 
-    public RawModel loadColorModelToVAO(float[] vertices, short[] indices) {
+    public static void loadToVAO(Block block) {
 
-        FloatBuffer vertexBuffer = storeDataInFloatBuffer(vertices);
-        ShortBuffer indexBuffer = storeDataInShortBuffer(indices);
+        FloatBuffer vertexBuffer = storeDataInFloatBuffer(block.getVertices());
+        ShortBuffer indexBuffer = storeDataInShortBuffer(block.getIndices());
 
         int vboID = createBO();
         int iboID = createBO();
 
         bindBuffers(vboID, iboID, vertexBuffer, indexBuffer);
-
-        return new RawModel(vboID, iboID, indices.length);
+        block.setModel(new RawModel(vboID, iboID, block.getIndices().length));
     }
 
 
-    private int createBO() {
+    private static int createBO() {
         final int[] bo = new int[1];
         GLES30.glGenBuffers(1, bo, 0);
         //vbos.add(bo[0]);
         return bo[0];
     }
 
-    private void bindBuffers(int vboID, int iboID, FloatBuffer vertexBuffer, ShortBuffer indexBuffer) {
+    private static void bindBuffers(int vboID, int iboID, FloatBuffer vertexBuffer, ShortBuffer indexBuffer) {
         if (vboID > 0 && iboID > 0) {
             GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboID);
             GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, vertexBuffer.capacity()
@@ -58,7 +59,18 @@ public class Loader {
             Log.println(Log.ERROR, "Renderer", "Buffer could not be created");
             return;
         }
+    }
 
+    public static void bindBuffers(RawModel model){
+        // Bind the VBO and IBO
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, model.getVaoID());
+        GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, model.getIaoID());
+    }
+
+    public static void unbindBuffers(){
+        // Unbind the VBO and IBO
+        GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
+        GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     //    public int loadTexture(String fileName) {
@@ -80,7 +92,7 @@ public class Loader {
 //        }
 //    }
 
-    private FloatBuffer storeDataInFloatBuffer(float[] vertices) {
+    private static FloatBuffer storeDataInFloatBuffer(float[] vertices) {
         FloatBuffer vertexBuffer;
 
         // initialize vertex byte buffer for shape coordinates
@@ -100,7 +112,7 @@ public class Loader {
         return vertexBuffer;
     }
 
-    private ShortBuffer storeDataInShortBuffer(short[] indices) {
+    private static ShortBuffer storeDataInShortBuffer(short[] indices) {
         ShortBuffer indexBuffer;
 
         ByteBuffer bb = ByteBuffer.allocateDirect(indices.length * Global.BYTES_PER_SHORT);
