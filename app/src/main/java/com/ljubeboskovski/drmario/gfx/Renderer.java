@@ -24,9 +24,6 @@ public class Renderer implements GLSurfaceView.Renderer {
     private RawModel model;
 
 
-
-
-
     /**
      * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
      * of being located at the center of the universe) to world space.
