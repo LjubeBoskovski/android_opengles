@@ -1,58 +1,57 @@
 package com.ljubeboskovski.drmario.gfx.shader;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
 import android.opengl.GLES30;
 
+import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.util.RawResourceReader;
 
 public abstract class ShaderProgram {
 
     private Context context;
-	int programID;
-	int vertexShaderID;
-	int fragmentShaderID;
+    int programID;
+    int vertexShaderID;
+    int fragmentShaderID;
 
-	// TODO:
-//	private List<Integer> attributes = new ArrayList<Integer>();
+    public static LinkedList<Attribute> attributes = new LinkedList<Attribute>();
+    int stride;
 
-	public ShaderProgram(Context context, int vertexResourceID, int fragmentResourceID) {
-	    this.context = context;
+
+    public ShaderProgram(Context context, int vertexResourceID, int fragmentResourceID) {
+        this.context = context;
         vertexShaderID = loadShader(GLES30.GL_VERTEX_SHADER, vertexResourceID);
         fragmentShaderID = loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentResourceID);
         programID = GLES30.glCreateProgram();
         GLES30.glAttachShader(programID, vertexShaderID);
         GLES30.glAttachShader(programID, fragmentShaderID);
         GLES30.glLinkProgram(programID);
+        //TODO: get program information (glGetProgramiv()) and log errors
         GLES30.glValidateProgram(programID);
         bindAttributes();
     }
 
-//	public ShaderProgram(String vertexFile, String fragmentFile){
-//		vertexShaderID = loadShader(vertexFile, GL_VERTEX_SHADER);
-//		fragmentShaderID = loadShader(fragmentFile, GL_FRAGMENT_SHADER);
-//		programID = glCreateProgram();
-//		glAttachShader(programID, vertexShaderID);
-//		glAttachShader(programID, fragmentShaderID);
-//		glLinkProgram(programID);
-//		glValidateProgram(programID);
-//		bindAttributes();
-//	}
+    protected void addAttribute(String name, int size, int type, int typeSize, boolean normalized) {
+        int handle = GLES30.glGetAttribLocation(programID, name);
+        Attribute lastAttribute = attributes.getLast();
+        int newOffset = lastAttribute.offset + lastAttribute.size * typeSize;
+        Attribute newAttribute = new Attribute(programID, name, handle, size, type, typeSize,
+                normalized, stride, newOffset);
+        attributes.add(newAttribute);
+    }
 
-	public void start() {
-		GLES30.glUseProgram(programID);
-		bindAttributes();
-	}
+    public void start() {
+        GLES30.glUseProgram(programID);
+        bindAttributes();
+    }
 
-	public void stop() {
-	    unbindAttributes();
-		GLES30.glUseProgram(0);
-	}
+    public void stop() {
+        unbindAttributes();
+        GLES30.glUseProgram(0);
+    }
 
 //	public void cleanUp() {
 //		stop();
@@ -64,35 +63,19 @@ public abstract class ShaderProgram {
 //	}
 
 
-	protected abstract void bindAttributes();
+    public void bindAttributes() {
+        for (Attribute attr : attributes) {
+            GLES30.glVertexAttribPointer(attr.handle, attr.size, attr.type,
+                    attr.normalized, attr.stride, attr.offset);
+            GLES30.glEnableVertexAttribArray(attr.handle);
+        }
+    }
 
-	protected abstract void unbindAttributes();
-
-	private static int loadShader(String file, int type) {
-//		StringBuilder shaderSource = new StringBuilder();
-//		try{
-//			BufferedReader reader = new BufferedReader(new FileReader(file));
-//			String line;
-//			while((line = reader.readLine())!=null){
-//				shaderSource.append(line).append("//\n");
-//			}
-//			reader.close();
-//		}catch(IOException e){
-//			e.printStackTrace();
-//			System.exit(-1);
-//		}
-//		int shaderID = glCreateShader(type);
-//		glShaderSource(shaderID, shaderSource);
-//		glCompileShader(shaderID);
-//		if(glGetShaderi(shaderID, GL_COMPILE_STATUS )== GL_FALSE){
-//			System.out.println(glGetShaderInfoLog(shaderID, 500));
-//			System.err.println("Could not compile shader!");
-//			System.exit(-1);
-//		}
-//		return shaderID;
-        return -1;
-	}
-
+    public void unbindAttributes() {
+        for (Attribute attr : attributes) {
+            GLES30.glDisableVertexAttribArray(attr.handle);
+        }
+    }
 
     private int loadShader(int type, int shaderResource) {
         String shaderCode = RawResourceReader.readTextFileFromRawResource(context,
