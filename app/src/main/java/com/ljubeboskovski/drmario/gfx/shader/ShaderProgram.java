@@ -10,6 +10,8 @@ import android.opengl.GLES30;
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.util.RawResourceReader;
 
+import org.w3c.dom.Attr;
+
 public abstract class ShaderProgram {
 
     private Context context;
@@ -36,10 +38,19 @@ public abstract class ShaderProgram {
 
     protected void addAttribute(String name, int size, int type, int typeSize, boolean normalized) {
         int handle = GLES30.glGetAttribLocation(programID, name);
-        Attribute lastAttribute = attributes.getLast();
-        int newOffset = lastAttribute.offset + lastAttribute.size * typeSize;
+        int newOffset = 0;
+        int newStride = size * typeSize;
+        if(!attributes.isEmpty()) {
+            Attribute lastAttribute = attributes.getLast();
+            newOffset = lastAttribute.offset + lastAttribute.size * typeSize;
+            newStride = lastAttribute.stride + size * typeSize;
+            for(Attribute attr : attributes){
+                attr.stride = newStride;
+            }
+        }
+
         Attribute newAttribute = new Attribute(programID, name, handle, size, type, typeSize,
-                normalized, stride, newOffset);
+                normalized, newStride, newOffset);
         attributes.add(newAttribute);
     }
 
