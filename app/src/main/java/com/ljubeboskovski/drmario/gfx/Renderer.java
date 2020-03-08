@@ -61,17 +61,9 @@ public class Renderer implements GLSurfaceView.Renderer {
     private void draw() {
         shader.start();
 
-
-
-        long time = SystemClock.uptimeMillis() % 1000L;
-        float scale = 0.3f * (float)Math.sin((time/1000.0f) * 2f * (float)Math.PI) + 1.0f;
+        game.update();
 
         for (Block block : game.getWorld().getBlocks()) {
-            if(block == game.getSelectedBlock()){
-                block.update(scale);
-            } else {
-                block.update(1.0f);
-            }
             Loader.bindBuffers(block.getModel());
             camera.projectModel(block.getmMatrix());
 

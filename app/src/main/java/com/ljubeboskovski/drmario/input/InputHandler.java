@@ -30,7 +30,8 @@ public class InputHandler {
 ////                    renderer.mDeltaX += deltaX;
 ////                    renderer.mDeltaY += deltaY;
 //                break;
-            case MotionEvent.ACTION_DOWN:
+//            case MotionEvent.ACTION_DOWN:
+            default:
                 touchOnWorld(event);
 
         }
