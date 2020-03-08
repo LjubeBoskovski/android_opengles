@@ -4,50 +4,61 @@ import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.entity.Block;
 import com.ljubeboskovski.drmario.game.world.World;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
+//<<<<<<< Updated upstream
+//=======
+import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
+import com.ljubeboskovski.drmario.gfx.texture.Texture;
+//>>>>>>> Stashed changes
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
-import java.util.List;
 
+import android.content.Context;
 import android.opengl.GLES30;
 import android.util.Log;
 
 public class Loader {
 
-    private List<Integer> vbos = new ArrayList<Integer>();
-    private List<Integer> ibos = new ArrayList<Integer>();
-    private List<Integer> textures = new ArrayList<Integer>();
+    private ArrayList<Integer> vbos = new ArrayList<Integer>();
+    private ArrayList<Integer> ibos = new ArrayList<Integer>();
+    private ArrayList<Integer> textures = new ArrayList<Integer>();
 
-    public static void loadToVAO(Block block) {
+    private Context context;
 
-        FloatBuffer vertexBuffer = storeDataInFloatBuffer(block.getVertices());
-        ShortBuffer indexBuffer = storeDataInShortBuffer(block.getIndices());
+    public Loader(Context context){
+        this.context = context;
+    }
 
-        int vboID = createBO();
-        int iboID = createBO();
+    public RawModel loadToVAO(float[] vertices, short[] indices) {
+
+        FloatBuffer vertexBuffer = storeDataInFloatBuffer(vertices);
+        ShortBuffer indexBuffer = storeDataInShortBuffer(indices);
+
+        int vboID = createVBO();
+        int iboID = createIBO();
 
         bindBuffers(vboID, iboID, vertexBuffer, indexBuffer);
-        block.setModel(new RawModel(vboID, iboID, block.getIndices().length));
+        return new RawModel(vboID, iboID, indices.length);
     }
 
-    public static void loadToVAO(World world){
-        for(Block block : world.getBlocks()) {
-            Loader.loadToVAO(block);
-        }
-    }
-
-
-    private static int createBO() {
+    private int createVBO() {
         final int[] bo = new int[1];
         GLES30.glGenBuffers(1, bo, 0);
-        //vbos.add(bo[0]);
+        vbos.add(bo[0]);
         return bo[0];
     }
 
-    private static void bindBuffers(int vboID, int iboID, FloatBuffer vertexBuffer, ShortBuffer indexBuffer) {
+    private int createIBO() {
+        final int[] bo = new int[1];
+        GLES30.glGenBuffers(1, bo, 0);
+        ibos.add(bo[0]);
+        return bo[0];
+    }
+
+    private void bindBuffers(int vboID, int iboID, FloatBuffer vertexBuffer, ShortBuffer indexBuffer) {
         if (vboID > 0 && iboID > 0) {
             GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, vboID);
             GLES30.glBufferData(GLES30.GL_ARRAY_BUFFER, vertexBuffer.capacity()
@@ -67,24 +78,31 @@ public class Loader {
         }
     }
 
-    public static void bindBuffers(RawModel model){
+    public void bindBuffers(RawModel model){
         // Bind the VBO and IBO
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, model.getVaoID());
         GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, model.getIaoID());
     }
 
-    public static void unbindBuffers(){
+    public void bindBuffers(TexturedModel model) {
+        GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, model.getTexture().getID());
+        GLES30.glUniform1i(model.getTexture().getID(), 0);
+        bindBuffers(model.getRawModel());
+    }
+
+    public void unbindBuffers(){
         // Unbind the VBO and IBO
         GLES30.glBindBuffer(GLES30.GL_ARRAY_BUFFER, 0);
         GLES30.glBindBuffer(GLES30.GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    //    public int loadTexture(String fileName) {
-//        Texture texture = new Texture("../../res/" + fileName + ".png");
-//        int textureID = texture.getTextureID();
-//        textures.add(textureID);
-//        return textureID;
-//    }
+        public int loadTexture(int resourceID) {
+        Texture texture = new Texture(context, resourceID);
+        int textureID = texture.getTextureID();
+        textures.add(textureID);
+        return textureID;
+    }
 
     //    public void cleanUp() {
 //        for (int vbo : vbos) {
