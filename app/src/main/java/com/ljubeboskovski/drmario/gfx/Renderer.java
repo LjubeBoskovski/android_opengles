@@ -7,6 +7,7 @@ import android.content.Context;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.Game;
@@ -16,6 +17,12 @@ import com.ljubeboskovski.drmario.gfx.shader.StaticShader;
 
 public class Renderer implements GLSurfaceView.Renderer {
 
+
+    public volatile float mDeltaX;
+    public volatile float mDeltaY;
+
+    private int xBlock = -1;
+    private int yBlock = -1;
 
     private Context context;
 
@@ -68,10 +75,15 @@ public class Renderer implements GLSurfaceView.Renderer {
 
 
 
+        long time = SystemClock.uptimeMillis() % 1000L;
+        float scale = 0.3f * (float)Math.sin((time/1000.0f) * 2f * (float)Math.PI) + 1.0f;
+
         for (Block block : game.world.getBlocks()) {
-            long time = SystemClock.uptimeMillis() % 10000L;
-            float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-            block.update(angleInDegrees);
+            if(block.getX() == xBlock && block.getY() == yBlock){
+                block.update(scale);
+            } else {
+                block.update(1.0f);
+            }
             Loader.bindBuffers(block.getModel());
             camera.projectModel(block.getmMatrix());
 
@@ -84,6 +96,14 @@ public class Renderer implements GLSurfaceView.Renderer {
         Loader.unbindBuffers();
 
         shader.stop();
+    }
+
+    public void touch(float x, float y){
+        float xOnWorld = x * 9.0f;
+        float yOnWorld = -1.0f * y * 16.0f + 32.0f;
+
+        xBlock = (int) (xOnWorld % 9);
+        yBlock = (int) (yOnWorld % 16);
     }
 
 

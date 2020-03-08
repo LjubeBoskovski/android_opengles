@@ -26,7 +26,8 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setViewParameters();
+        surfaceView = new SurfaceView(this);
+//        setViewParameters();
         setContentView(surfaceView);
 
         // Check if the system supports OpenGL ES 3.0.
@@ -47,7 +48,8 @@ public class MainActivity extends Activity {
 
             // Set the Renderer for drawing on the GLSurfaceView
             com.ljubeboskovski.drmario.gfx.Renderer renderer = new com.ljubeboskovski.drmario.gfx.Renderer(this);
-            surfaceView.setRenderer(renderer, displayMetrics.density);
+            surfaceView.setRenderer(renderer, displayMetrics.density, displayMetrics.widthPixels,
+                    displayMetrics.heightPixels);
         } else {
             Log.println(Log.ERROR, "MainActivity", "OpenGLES 3.0 not supported");
             return;
@@ -74,7 +76,6 @@ public class MainActivity extends Activity {
     private void setViewParameters(){
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
-        surfaceView = new SurfaceView(this);
         surfaceView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                         // Set the content to appear under the system bars so that the
