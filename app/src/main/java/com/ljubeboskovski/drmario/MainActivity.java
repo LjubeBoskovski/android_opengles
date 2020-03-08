@@ -1,35 +1,77 @@
 package com.ljubeboskovski.drmario;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.pm.ConfigurationInfo;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Layout;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowInsets;
 import android.view.WindowManager;
 
 import androidx.annotation.RequiresApi;
 
-import com.ljubeboskovski.drmario.game.Game;
 import com.ljubeboskovski.drmario.gfx.SurfaceView;
 
 public class MainActivity extends Activity {
 
     private SurfaceView surfaceView;
-    private com.ljubeboskovski.drmario.gfx.Renderer renderer;
 
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        setViewParameters();
+        setContentView(surfaceView);
+
+        // Check if the system supports OpenGL ES 3.0.
+        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+        final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x30000;
+
+        if (supportsEs2)
+        {
+            // Request an OpenGL ES 3.0 compatible context.
+            surfaceView.setEGLContextClientVersion(3);
+
+            // Try to not loose the context after pause/resume
+            surfaceView.setPreserveEGLContextOnPause(true);
+
+            final DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+            // Set the Renderer for drawing on the GLSurfaceView
+            com.ljubeboskovski.drmario.gfx.Renderer renderer = new com.ljubeboskovski.drmario.gfx.Renderer(this);
+            surfaceView.setRenderer(renderer, displayMetrics.density);
+        } else {
+            Log.println(Log.ERROR, "MainActivity", "OpenGLES 3.0 not supported");
+            return;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        // The activity must call the GL surface view's onResume() on activity
+        // onResume().
+        super.onResume();
+        surfaceView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        // The activity must call the GL surface view's onPause() on activity
+        // onPause().
+        super.onPause();
+        surfaceView.onPause();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    private void setViewParameters(){
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
         surfaceView = new SurfaceView(this);
@@ -54,36 +96,6 @@ public class MainActivity extends Activity {
         lp.layoutInDisplayCutoutMode =
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
         getWindow().setAttributes(lp);
-
-        setContentView(surfaceView);
-
-        // Create an OpenGL ES 3.0 context
-        surfaceView.setEGLContextClientVersion(3);
-
-        // Try to not loose the context after pause/resume
-        surfaceView.setPreserveEGLContextOnPause(true);
-
-
-        // Set the Renderer for drawing on the GLSurfaceView
-        renderer = new com.ljubeboskovski.drmario.gfx.Renderer(this);
-        surfaceView.setRenderer(renderer, 1.0f);
-    }
-
-    @Override
-    protected void onResume() {
-        // The activity must call the GL surface view's onResume() on activity
-        // onResume().
-
-        super.onResume();
-        surfaceView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        // The activity must call the GL surface view's onPause() on activity
-        // onPause().
-        super.onPause();
-        surfaceView.onPause();
     }
 
 }
