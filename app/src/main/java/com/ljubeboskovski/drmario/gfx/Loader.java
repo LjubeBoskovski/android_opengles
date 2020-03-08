@@ -2,6 +2,7 @@ package com.ljubeboskovski.drmario.gfx;
 
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.entity.Block;
+import com.ljubeboskovski.drmario.game.world.World;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
 import com.ljubeboskovski.drmario.gfx.model.SingleColoredModel;
 
@@ -31,6 +32,12 @@ public class Loader {
 
         bindBuffers(vboID, iboID, vertexBuffer, indexBuffer);
         block.setModel(new RawModel(vboID, iboID, block.getIndices().length));
+    }
+
+    public static void loadToVAO(World world){
+        for(Block block : world.getBlocks()) {
+            Loader.loadToVAO(block);
+        }
     }
 
 

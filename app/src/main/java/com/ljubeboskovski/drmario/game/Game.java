@@ -7,7 +7,7 @@ import java.util.Random;
 public class Game {
 
 	public static Random random;
-	private World world;
+	public World world;
 	
 	public Game() {
 	    this.random = new Random();

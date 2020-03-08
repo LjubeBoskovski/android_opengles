@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class World {
 
     private int sizeX, sizeY;
+
     private ArrayList<Block> blocks = new ArrayList<Block>();
 
     public World(int sizeX, int sizeY) {
@@ -41,6 +42,10 @@ public class World {
                 blocks.add(newBlock);
             }
         }
+    }
+
+    public ArrayList<Block> getBlocks() {
+        return blocks;
     }
 
 }

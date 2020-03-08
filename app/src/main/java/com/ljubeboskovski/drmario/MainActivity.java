@@ -13,6 +13,7 @@ import android.view.WindowManager;
 
 import androidx.annotation.RequiresApi;
 
+import com.ljubeboskovski.drmario.game.Game;
 import com.ljubeboskovski.drmario.gfx.SurfaceView;
 
 public class MainActivity extends Activity {
@@ -66,6 +67,7 @@ public class MainActivity extends Activity {
 
         // Render the view only when there is a change in the drawing data
         // setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+
     }
 
     @Override

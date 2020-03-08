@@ -44,11 +44,11 @@ public class Camera {
 
 
         // Create a new orthographic projection matrix.
-        final float left = -4.5f;
-        final float right = 4.5f;
+        final float left = 0f;
+        final float right = 9f;
 
-        final float bottom = -8.0f;
-        final float top = 8.0f;
+        final float bottom = 0f;
+        final float top = 16f;
 
         final float near = 1.0f;
         final float far = 20.0f;

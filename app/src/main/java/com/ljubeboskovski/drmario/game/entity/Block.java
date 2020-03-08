@@ -10,7 +10,7 @@ import com.ljubeboskovski.drmario.gfx.model.SingleColoredModel;
 
 public class Block extends Entity {
 
-    private int x, y;
+    private float x, y;
     private BlockColor color;
     private float[] colorVector;
 
@@ -62,8 +62,8 @@ public class Block extends Entity {
 ////			0, 0
 //        };
     public Block(int x, int y, BlockColor color) {
-        this.x = x;
-        this.y = y;
+        this.x = x + 0.5f;
+        this.y = y + 0.5f;
         this.color = color;
         switch (color){
             case RED:
@@ -73,7 +73,7 @@ public class Block extends Entity {
                 colorVector = new float[] {1.0f, 1.0f, 0.0f, 1.0f};
                 break;
             case BLUE:
-                colorVector = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+                colorVector = new float[] {0.0f, 0.0f, 1.0f, 1.0f};
                 break;
             default:
                 colorVector = new float[] {0.0f, 1.0f, 0.0f, 1.0f};
@@ -94,11 +94,12 @@ public class Block extends Entity {
             }
         }
 
+        update(0.0f);
     }
 
     public void update(float angleInDegrees){
         Matrix.setIdentityM(mMatrix, 0);
-        Matrix.translateM(mMatrix, 0, angleInDegrees / 100.0f, angleInDegrees / 200.0f, 0.0f);
+        Matrix.translateM(mMatrix, 0, x, y, 0.0f);
         Matrix.rotateM(mMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
     }
 
