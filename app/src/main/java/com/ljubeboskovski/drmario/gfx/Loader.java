@@ -4,7 +4,6 @@ import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.entity.Block;
 import com.ljubeboskovski.drmario.game.world.World;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
-import com.ljubeboskovski.drmario.gfx.model.SingleColoredModel;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

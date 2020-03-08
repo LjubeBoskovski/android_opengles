@@ -13,12 +13,12 @@ import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.Game;
 import com.ljubeboskovski.drmario.game.entity.Block;
 import com.ljubeboskovski.drmario.game.world.World;
-import com.ljubeboskovski.drmario.gfx.shader.StaticShader;
+import com.ljubeboskovski.drmario.gfx.shader.ColorShader;
 
 public class Renderer implements GLSurfaceView.Renderer {
 
     private Context context;
-    private StaticShader shader;
+    private ColorShader shader;
     private Camera camera;
     private Game game;
 
@@ -37,7 +37,7 @@ public class Renderer implements GLSurfaceView.Renderer {
         GLES30.glEnable(GLES30.GL_DEPTH_TEST);
 
 
-        shader = new StaticShader(context);
+        shader = new ColorShader(context);
         camera = new Camera();
 
         Loader.loadToVAO(game.getWorld());

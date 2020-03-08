@@ -6,7 +6,6 @@ import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.Global.*;
 import com.ljubeboskovski.drmario.gfx.Loader;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
-import com.ljubeboskovski.drmario.gfx.model.SingleColoredModel;
 
 public class Block extends Entity {
 
