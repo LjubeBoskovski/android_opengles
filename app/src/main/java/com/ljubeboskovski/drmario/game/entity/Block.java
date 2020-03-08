@@ -73,15 +73,15 @@ public class Block extends Entity {
         }
 
         int verticesSize =
-                coordinates.length + (coordinates.length / Global.COORDS_PER_VERTEX) * Global.COLOR_LENGTH;
+                coordinates.length + (coordinates.length / Global.SIZE_POSITION) * Global.SIZE_COLOR;
         vertices = new float[verticesSize];
 
         int j = 0;
-        for(int i = 0; i < coordinates.length / Global.COORDS_PER_VERTEX; i++){
-            for(int k = 0; k < Global.COORDS_PER_VERTEX; k++) {
-                vertices[j++] = coordinates[i * Global.COORDS_PER_VERTEX + k];
+        for(int i = 0; i < coordinates.length / Global.SIZE_POSITION; i++){
+            for(int k = 0; k < Global.SIZE_POSITION; k++) {
+                vertices[j++] = coordinates[i * Global.SIZE_POSITION + k];
             }
-            for(int k = 0; k < colorVector.length; k++) {
+            for(int k = 0; k < Global.SIZE_COLOR; k++) {
                 vertices[j++] = colorVector[k];
             }
         }

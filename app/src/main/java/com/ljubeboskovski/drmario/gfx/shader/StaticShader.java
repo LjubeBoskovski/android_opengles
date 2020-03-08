@@ -14,9 +14,9 @@ public class StaticShader extends ShaderProgram {
     public StaticShader(Context context) {
         super(context, VERTEX_RESOURCE_ID, FRAGMENT_RESOURCE_ID);
 
-        addAttribute("aPosition", Global.COORDS_PER_VERTEX, GLES30.GL_FLOAT,
+        addAttribute("aPosition", Global.SIZE_POSITION, GLES30.GL_FLOAT,
                 Global.BYTES_PER_FLOAT, false);
-        addAttribute("aColor", Global.COLOR_LENGTH, GLES30.GL_FLOAT, Global.BYTES_PER_FLOAT,
+        addAttribute("aColor", Global.SIZE_COLOR, GLES30.GL_FLOAT, Global.BYTES_PER_FLOAT,
                 false);
     }
 
