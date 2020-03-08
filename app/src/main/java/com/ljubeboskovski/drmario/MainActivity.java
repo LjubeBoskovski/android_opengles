@@ -14,12 +14,15 @@ import android.view.WindowManager;
 
 import androidx.annotation.RequiresApi;
 
+import com.ljubeboskovski.drmario.game.Game;
+import com.ljubeboskovski.drmario.gfx.Renderer;
 import com.ljubeboskovski.drmario.gfx.SurfaceView;
+import com.ljubeboskovski.drmario.input.InputHandler;
 
 public class MainActivity extends Activity {
 
     private SurfaceView surfaceView;
-
+    private Game game;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -35,8 +38,7 @@ public class MainActivity extends Activity {
         final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
         final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x30000;
 
-        if (supportsEs2)
-        {
+        if (supportsEs2) {
             // Request an OpenGL ES 3.0 compatible context.
             surfaceView.setEGLContextClientVersion(3);
 
@@ -48,8 +50,17 @@ public class MainActivity extends Activity {
 
             // Set the Renderer for drawing on the GLSurfaceView
             com.ljubeboskovski.drmario.gfx.Renderer renderer = new com.ljubeboskovski.drmario.gfx.Renderer(this);
-            surfaceView.setRenderer(renderer, displayMetrics.density, displayMetrics.widthPixels,
+            surfaceView.setRenderer(renderer);
+
+            // Create game
+            game = new Game();
+            renderer.setGame(game);
+
+            // Set the Input Handler
+            InputHandler inputHandler = new InputHandler(game, displayMetrics.density,
+                    displayMetrics.widthPixels,
                     displayMetrics.heightPixels);
+            surfaceView.setInputHandler(inputHandler);
         } else {
             Log.println(Log.ERROR, "MainActivity", "OpenGLES 3.0 not supported");
             return;
@@ -73,7 +84,7 @@ public class MainActivity extends Activity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
-    private void setViewParameters(){
+    private void setViewParameters() {
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
         surfaceView.setSystemUiVisibility(

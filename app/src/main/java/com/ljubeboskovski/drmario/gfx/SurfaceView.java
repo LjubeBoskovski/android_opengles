@@ -2,18 +2,16 @@ package com.ljubeboskovski.drmario.gfx;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.renderscript.ScriptGroup;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
+
+import com.ljubeboskovski.drmario.input.InputHandler;
 
 public class SurfaceView extends GLSurfaceView {
 
     private com.ljubeboskovski.drmario.gfx.Renderer renderer;
-
-    private float density;
-    private int widthPixels, heightPixels;
-
-    float x, y, previousX, previousY, deltaX, deltaY;
+    private InputHandler inputHandler;
 
     public SurfaceView(Context context) {
         super(context);
@@ -24,46 +22,22 @@ public class SurfaceView extends GLSurfaceView {
     }
 
     // Hides superclass method.
-    public void setRenderer(com.ljubeboskovski.drmario.gfx.Renderer renderer,
-                            float density, int widthPixels,
-                            int heightPixels) {
+    public void setRenderer(com.ljubeboskovski.drmario.gfx.Renderer renderer) {
         this.renderer = renderer;
-        this.density = density;
-        this.widthPixels = widthPixels;
-        this.heightPixels = heightPixels;
         super.setRenderer(renderer);
+    }
+
+    public void setInputHandler(InputHandler inputHandler) {
+        this.inputHandler = inputHandler;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event != null) {
-            float x = event.getX();
-            float y = event.getY();
-
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_MOVE:
-                    if (renderer != null) {
-                        deltaX = (x - previousX) / density / 2f;
-                        deltaY = (y - previousY) / density / 2f;
-
-                        renderer.mDeltaX += deltaX;
-                        renderer.mDeltaY += deltaY;
-                    }
-                    break;
-                case MotionEvent.ACTION_DOWN:
-                    if (renderer != null) {
-                        renderer.touch(x/widthPixels, y/heightPixels);
-                        Log.println(Log.WARN, "Touch", Float.toString(y/heightPixels));
-                    }
-            }
-
-            previousX = x;
-            previousY = y;
-
+        if (event != null && inputHandler != null) {
+            inputHandler.onTouchEvent(event);
             return true;
         } else {
             return super.onTouchEvent(event);
         }
-
     }
 }

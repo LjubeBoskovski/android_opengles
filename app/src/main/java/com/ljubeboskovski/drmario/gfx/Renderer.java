@@ -17,18 +17,9 @@ import com.ljubeboskovski.drmario.gfx.shader.StaticShader;
 
 public class Renderer implements GLSurfaceView.Renderer {
 
-
-    public volatile float mDeltaX;
-    public volatile float mDeltaY;
-
-    private int xBlock = -1;
-    private int yBlock = -1;
-
     private Context context;
-
     private StaticShader shader;
     private Camera camera;
-
     private Game game;
 
     public Renderer(Context context) {
@@ -49,10 +40,7 @@ public class Renderer implements GLSurfaceView.Renderer {
         shader = new StaticShader(context);
         camera = new Camera();
 
-        game = new Game();
-//        world = new World(9, 16);
-
-        Loader.loadToVAO(game.world);
+        Loader.loadToVAO(game.getWorld());
 
         //ModelTexture texture = new ModelTexture(loader.loadTexture("sprites" +
         //		"/blocks_spritemap"));
@@ -78,8 +66,8 @@ public class Renderer implements GLSurfaceView.Renderer {
         long time = SystemClock.uptimeMillis() % 1000L;
         float scale = 0.3f * (float)Math.sin((time/1000.0f) * 2f * (float)Math.PI) + 1.0f;
 
-        for (Block block : game.world.getBlocks()) {
-            if(block.getX() == xBlock && block.getY() == yBlock){
+        for (Block block : game.getWorld().getBlocks()) {
+            if(block == game.getSelectedBlock()){
                 block.update(scale);
             } else {
                 block.update(1.0f);
@@ -98,13 +86,8 @@ public class Renderer implements GLSurfaceView.Renderer {
         shader.stop();
     }
 
-    public void touch(float x, float y){
-        float xOnWorld = x * 9.0f;
-        float yOnWorld = -1.0f * y * 16.0f + 32.0f;
-
-        xBlock = (int) (xOnWorld % 9);
-        yBlock = (int) (yOnWorld % 16);
+    public void setGame(Game game) {
+        this.game = game;
     }
-
 
 }
