@@ -23,27 +23,16 @@ public class Block extends Entity {
     float[] vertices;
 
     float[] coordinates = {
-//    float[] vertices = {
             -0.5f, -0.5f, 0f,
-//            0.0f, 0.0f, 1.0f, 1.0f,
-
             0.5f, -0.5f, 0f,
-//            1.0f, 0.0f, 1.0f, 1.0f,
-
             0.5f, 0.5f, 0f,
-//            1.0f, 1.0f, 1.0f, 1.0f,
-
             -0.5f, 0.5f, 0f,
-//            0.0f, 1.0f, 1.0f, 1.0f
-
     };
 
     short[] indices = {
             0, 1, 3,
             3, 1, 2
     };
-
-
 
 
 //        int smx = 2;
@@ -100,6 +89,7 @@ public class Block extends Entity {
     public void update(float angleInDegrees){
         Matrix.setIdentityM(mMatrix, 0);
         Matrix.translateM(mMatrix, 0, x, y, 0.0f);
+        Matrix.scaleM(mMatrix, 0, angleInDegrees/180.0f, angleInDegrees/180.0f, 0);
         Matrix.rotateM(mMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
     }
 

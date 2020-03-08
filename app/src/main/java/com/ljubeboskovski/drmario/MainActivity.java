@@ -60,20 +60,20 @@ public class MainActivity extends Activity {
         // Create an OpenGL ES 3.0 context
         surfaceView.setEGLContextClientVersion(3);
 
-        renderer = new com.ljubeboskovski.drmario.gfx.Renderer(this);
+        // Try to not loose the context after pause/resume
+        surfaceView.setPreserveEGLContextOnPause(true);
+
 
         // Set the Renderer for drawing on the GLSurfaceView
+        renderer = new com.ljubeboskovski.drmario.gfx.Renderer(this);
         surfaceView.setRenderer(renderer, 1.0f);
-
-        // Render the view only when there is a change in the drawing data
-        // setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-
     }
 
     @Override
     protected void onResume() {
         // The activity must call the GL surface view's onResume() on activity
         // onResume().
+
         super.onResume();
         surfaceView.onResume();
     }
