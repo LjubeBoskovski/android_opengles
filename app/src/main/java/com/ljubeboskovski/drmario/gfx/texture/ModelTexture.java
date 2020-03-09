@@ -1,4 +1,4 @@
-package stratil.gfx.texture;
+package com.ljubeboskovski.drmario.gfx.texture;
 
 public class ModelTexture {
 

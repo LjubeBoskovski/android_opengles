@@ -1,14 +1,9 @@
 package com.ljubeboskovski.drmario.gfx;
 
 import com.ljubeboskovski.drmario.Global;
-import com.ljubeboskovski.drmario.game.entity.Block;
-import com.ljubeboskovski.drmario.game.world.World;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
-//<<<<<<< Updated upstream
-//=======
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
 import com.ljubeboskovski.drmario.gfx.texture.Texture;
-//>>>>>>> Stashed changes
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

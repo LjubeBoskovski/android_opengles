@@ -5,8 +5,9 @@ import android.opengl.Matrix;
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.Global.*;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
+import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
 
-public class Block extends Entity {
+public class TexturedBlock extends Entity {
 
     private float x;
 
@@ -15,7 +16,7 @@ public class Block extends Entity {
     private BlockColor color;
     private float[] colorVector;
 
-    private RawModel model;
+    private TexturedModel model;
 
 
     public float[] mMatrix = new float[16];
@@ -35,25 +36,25 @@ public class Block extends Entity {
             3, 1, 2
     };
 
-//        int smx = 2;
-//        int smy = 1;
-//        int smsize = 8;
+    int smx = 2;
+    int smy = 1;
+    int smsize = 8;
 
-//        float[] textureCoords = {
-////                ((float) smx) / smsize, ((float) smy + 1) / smsize,
-////                ((float) smx + 1) / smsize, ((float) smy + 1) / smsize,
-////                ((float) smx + 1) / smsize, ((float) smy) / smsize,
-////                ((float) smx) / smsize, ((float) smy) / smsize
-//
-//			0f, 1f,
-//			1f, 1f,
-//			1f, 0f,
-//			0f, 0f
-//        };
+    float[] textureCoords = {
+//                ((float) smx) / smsize, ((float) smy + 1) / smsize,
+//                ((float) smx + 1) / smsize, ((float) smy + 1) / smsize,
+//                ((float) smx + 1) / smsize, ((float) smy) / smsize,
+//                ((float) smx) / smsize, ((float) smy) / smsize
+
+            0f, 1f,
+            1f, 1f,
+            1f, 0f,
+            0f, 0f
+    };
 
 
 
-    public Block(int x, int y, BlockColor color) {
+    public TexturedBlock(int x, int y, BlockColor color) {
         this.x = x;
         this.y = y;
         this.color = color;
@@ -73,7 +74,7 @@ public class Block extends Entity {
         }
 
         int verticesSize =
-                coordinates.length + (coordinates.length / Global.SIZE_POSITION) * Global.SIZE_COLOR;
+                coordinates.length + (coordinates.length / Global.SIZE_POSITION) * (Global.SIZE_COLOR + Global.SIZE_TEXTURE_COORDS);
         vertices = new float[verticesSize];
 
         int j = 0;
@@ -83,6 +84,9 @@ public class Block extends Entity {
             }
             for(int k = 0; k < Global.SIZE_COLOR; k++) {
                 vertices[j++] = colorVector[k];
+            }
+            for(int k = 0; k < Global.SIZE_TEXTURE_COORDS; k++) {
+                vertices[j++] = textureCoords[i * Global.SIZE_TEXTURE_COORDS + k];
             }
         }
 
@@ -96,7 +100,7 @@ public class Block extends Entity {
         Matrix.rotateM(mMatrix, 0, 0f, 0.0f, 0.0f, 1.0f);
     }
 
-    public RawModel getModel() {
+    public TexturedModel getModel() {
         return model;
     }
 
@@ -112,7 +116,7 @@ public class Block extends Entity {
         return indices;
     }
 
-    public void setModel(RawModel model) {
+    public void setModel(TexturedModel model) {
         this.model = model;
     }
 

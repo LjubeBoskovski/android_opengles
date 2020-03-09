@@ -11,7 +11,7 @@ public class InputHandler {
     private static float density;
     private static int widthPixels, heightPixels;
 
-    private static float x, y, previousX, previousY, deltaX, deltaY;
+//    private static float x, y, previousX, previousY, deltaX, deltaY;
 
     public InputHandler(Game game, float density, int widthPixels, int heightPixels) {
         this.game = game;
@@ -23,21 +23,19 @@ public class InputHandler {
     public void onTouchEvent(MotionEvent event) {
 
         switch (event.getAction()) {
-//            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_DOWN:
+                touchOnWorld(event);
+            case MotionEvent.ACTION_MOVE:
 //                deltaX = (x - previousX) / density / 2f;
 //                deltaY = (y - previousY) / density / 2f;
-//
-////                    renderer.mDeltaX += deltaX;
-////                    renderer.mDeltaY += deltaY;
-//                break;
-//            case MotionEvent.ACTION_DOWN:
+//                    renderer.mDeltaX += deltaX;
+//                    renderer.mDeltaY += deltaY;
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
             default:
-                touchOnWorld(event);
-
+                break;
         }
-
-        previousX = x;
-        previousY = y;
     }
 
 

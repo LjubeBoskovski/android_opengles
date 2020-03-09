@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import android.content.Context;
 import android.opengl.GLES30;
+import android.util.Log;
 
 import com.ljubeboskovski.drmario.gfx.Camera;
 import com.ljubeboskovski.drmario.util.RawResourceReader;
@@ -14,6 +15,7 @@ public abstract class ShaderProgram {
     private int programID;
 
     private static LinkedList<Attribute> attributes = new LinkedList<Attribute>();
+    private static LinkedList<Uniform> uniforms = new LinkedList<Uniform>();
 
     private int mvMatrixHandle;
     private int mvpMatrixHandle;
@@ -21,8 +23,8 @@ public abstract class ShaderProgram {
 
     ShaderProgram(Context context, int vertexResourceID, int fragmentResourceID) {
         this.context = context;
-        int vertexShaderID = loadShader(GLES30.GL_VERTEX_SHADER, vertexResourceID);
-        int fragmentShaderID = loadShader(GLES30.GL_FRAGMENT_SHADER, fragmentResourceID);
+        int vertexShaderID = compileShader(GLES30.GL_VERTEX_SHADER, vertexResourceID);
+        int fragmentShaderID = compileShader(GLES30.GL_FRAGMENT_SHADER, fragmentResourceID);
         programID = GLES30.glCreateProgram();
         GLES30.glAttachShader(programID, vertexShaderID);
         GLES30.glAttachShader(programID, fragmentShaderID);
@@ -52,6 +54,8 @@ public abstract class ShaderProgram {
                 normalized, newStride, newOffset);
         attributes.add(newAttribute);
     }
+
+    public Uniform addUniform(String name, )
 
 
 
@@ -89,7 +93,7 @@ public abstract class ShaderProgram {
         }
     }
 
-    private int loadShader(int type, int shaderResource) {
+    private int compileShader(int type, int shaderResource) {
         String shaderCode = RawResourceReader.readTextFileFromRawResource(context,
                 shaderResource);
 
@@ -99,6 +103,18 @@ public abstract class ShaderProgram {
         GLES30.glShaderSource(shader, shaderCode);
         GLES30.glCompileShader(shader);
 
+        // Get the compilation status.
+        final int[] compileStatus = new int[1];
+        GLES30.glGetShaderiv(shader, GLES30.GL_COMPILE_STATUS, compileStatus, 0);
+
+        // If the compilation failed, delete the shader.
+        if (compileStatus[0] == 0)
+        {
+            Log.e("ShaderProgram",
+                    "Error compiling shader: " + GLES30.glGetShaderInfoLog(shader));
+            GLES30.glDeleteShader(shader);
+            shader = 0;
+        }
         return shader;
     }
 
