@@ -7,7 +7,10 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLES30;
+import android.opengl.GLUtils;
 
 import com.ljubeboskovski.drmario.util.TextureHelper;
 
@@ -18,45 +21,42 @@ public class Texture {
     private int handle;
 
     public Texture(final Context context, final int resourceId) {
-        handle = TextureHelper.loadTexture(context, resourceId);
+        handle = loadTexture(context, resourceId);
     }
 
-//    private int load(final Context context, final int resourceId) {
-//        int[] pixels = null;
-//        try {
-//            BufferedImage image = ImageIO.read(new FileInputStream(path));
-//            width = image.getWidth();
-//            height = image.getHeight();
-//            pixels = new int[width * height];
-//            image.getRGB(0, 0, width, height, pixels, 0, width);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        int[] data = new int[width * height];
-//        for (int i = 0; i < width * height; i++) {
-//            int a = (pixels[i] & 0xff000000) >> 24;
-//            int r = (pixels[i] & 0xff0000) >> 16;
-//            int g = (pixels[i] & 0xff00) >> 8;
-//            int b = (pixels[i] & 0xff);
-//
-//            data[i] = a << 24 | b << 16 | g << 8 | r;
-//        }
-//
-//        int result = glGenTextures();
-//        glBindTexture(GL10.GL_TEXTURE_2D, result);
-//        glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
-//        glTexParameteri(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_NEAREST);
-//
-//        IntBuffer buffer = ByteBuffer.allocateDirect(data.length << 2)
-//                .order(ByteOrder.nativeOrder()).asIntBuffer();
-//        buffer.put(data).flip();
-//
-//        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
-//                GL_UNSIGNED_BYTE, buffer);
-//        glBindTexture(GL_TEXTURE_2D, 0);
-//        return result;
-//    }
+
+    private int loadTexture(final Context context, final int resourceId)
+    {
+        final int[] textureHandle = new int[1];
+
+        GLES30.glGenTextures(1, textureHandle, 0);
+
+        if (textureHandle[0] == 0)
+        {
+            throw new RuntimeException("Error generating texture name.");
+        }
+
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;	// No pre-scaling
+
+        // Read in the resource
+        final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
+
+        // Bind to the texture in OpenGL
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureHandle[0]);
+
+        // Set filtering
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
+
+        // Load the bitmap into the bound texture.
+        GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, bitmap, 0);
+
+        // Recycle the bitmap, since its data has been loaded into OpenGL.
+        bitmap.recycle();
+
+        return textureHandle[0];
+    }
 
     public void bind() {
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, handle);

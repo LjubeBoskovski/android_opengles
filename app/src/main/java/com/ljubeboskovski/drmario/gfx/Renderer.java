@@ -4,6 +4,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 
@@ -17,12 +18,12 @@ import com.ljubeboskovski.drmario.gfx.texture.ModelTexture;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
 import com.ljubeboskovski.drmario.game.entity.Block;
 import com.ljubeboskovski.drmario.game.Game;
-import com.ljubeboskovski.drmario.util.TextureHelper;
 
 
 public class Renderer implements GLSurfaceView.Renderer {
 
     private Context context;
+
     private ColorShader colorShader;
     private TextureShader textureShader;
     private Loader loader;
@@ -32,20 +33,17 @@ public class Renderer implements GLSurfaceView.Renderer {
     private Block colorBlock;
     private TexturedBlock textureBlock;
 
-
-    private int textureDataHandle;
-//    private int textureUniformHandle;
-
     public Renderer(Context context) {
         this.context = context;
     }
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
-//        colorShader = new ColorShader(context);
+        initGL();
+
         textureShader = new TextureShader(context);
+//        colorShader = new ColorShader(context);
         loader = new Loader(context);
         camera = new Camera();
-
 
 //        for (Block block : game.getWorld().getBlocks()) {
 //            block.setModel(loader.loadToVAO(block.getVertices(), block.getIndices()));
@@ -54,15 +52,12 @@ public class Renderer implements GLSurfaceView.Renderer {
 //        colorBlock = new Block(0, 0, Global.BlockColor.BLUE);
 //        RawModel model = loader.loadToVAO(colorBlock.getVertices(), colorBlock.getIndices());
 //        colorBlock.setModel(model);
-//
-        textureBlock = new TexturedBlock(3, 3, Global.BlockColor.BLUE);
+
+        textureBlock = new TexturedBlock(1, 1, Global.BlockColor.BLUE);
         RawModel textureModel = loader.loadToVAO(textureBlock.getVertices(), textureBlock.getIndices());
         ModelTexture texture = new ModelTexture(loader.loadTexture(R.drawable.blocks_spritemap));
         TexturedModel texturedModel = new TexturedModel(textureModel, texture);
         textureBlock.setModel(texturedModel);
-
-        textureDataHandle = TextureHelper.loadTexture(context, R.drawable.blocks_spritemap);
-
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -107,19 +102,11 @@ public class Renderer implements GLSurfaceView.Renderer {
         textureBlock.update(1.0f);
         textureShader.start();
 
-//        textureUniformHandle = GLES30.glGetUniformLocation(textureShader.programID, "u_Texture");
-
 //        for (Block block : game.getWorld().getBlocks()) {
         loader.bindBuffers(textureBlock.getModel().getRawModel());
         camera.projectModel(textureBlock.getmMatrix());
-        textureShader.bindAttributes(camera);
+        textureShader.bindAttributes(camera, textureBlock.getModel().getTexture());
 
-        // Set the active texture unit to texture unit 0.
-        GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
-        // Bind the texture to this unit.
-        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureDataHandle);
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        GLES30.glUniform1i(textureShader.textureHandle, 0);
 
         GLES30.glDrawElements(GLES30.GL_TRIANGLES,
                 textureBlock.getModel().getRawModel().getIndexSize(),
@@ -134,7 +121,7 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     private void initGL() {
         // Set the background frame color
-        GLES30.glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+        GLES30.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         // Use culling to remove back faces.
         GLES30.glEnable(GLES30.GL_CULL_FACE);
@@ -159,5 +146,4 @@ public class Renderer implements GLSurfaceView.Renderer {
     public void setGame(Game game) {
         this.game = game;
     }
-
 }

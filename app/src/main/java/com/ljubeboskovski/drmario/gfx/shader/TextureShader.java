@@ -6,7 +6,6 @@ import android.opengl.GLES30;
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.R;
 
-
 public class TextureShader extends ShaderProgram {
 
     private static final int VERTEX_RESOURCE_ID = R.raw.texture_vertex;
