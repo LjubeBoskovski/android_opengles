@@ -1,9 +1,11 @@
 package com.ljubeboskovski.drmario.gfx;
 
 import com.ljubeboskovski.drmario.Global;
+import com.ljubeboskovski.drmario.game.entity.block.Block;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
 import com.ljubeboskovski.drmario.gfx.texture.Texture;
+import com.ljubeboskovski.drmario.gfx.texture.TextureMap;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -39,8 +41,12 @@ public class Loader {
         return new RawModel(vboID, iboID, indices.length);
     }
 
-    public RawModel loadToVAO(float[] coordinates, float[] color, float[] texCoordinates,
-                              short[] indices) {
+    public void loadToVAO(Block block, TextureMap textureMap) {
+        float[] coordinates = Global.QuadForm.coordinates;
+        float[] color = block.getColorVector();
+        float[] texCoordinates = textureMap.getTexCoordinates(block.getTextureMapX(),
+                block.getTextureMapY());
+
         int verticesSize =
                 coordinates.length + (coordinates.length / Global.SIZE_POSITION) * (Global.SIZE_COLOR + Global.SIZE_TEXTURE_COORDS);
         float[] vertices = new float[verticesSize];
@@ -57,7 +63,9 @@ public class Loader {
                 vertices[j++] = texCoordinates[i * Global.SIZE_TEXTURE_COORDS + k];
             }
         }
-        return loadToVAO(vertices, indices);
+        RawModel model = loadToVAO(vertices, Global.QuadForm.indices);
+        TexturedModel texturedModel = new TexturedModel(model, textureMap.getTexture());
+        block.setModel(texturedModel);
     }
 
     private int createVBO() {

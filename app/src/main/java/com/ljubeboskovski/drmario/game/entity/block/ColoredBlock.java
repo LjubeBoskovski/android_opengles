@@ -1,9 +1,10 @@
-package com.ljubeboskovski.drmario.game.entity;
+package com.ljubeboskovski.drmario.game.entity.block;
 
 import android.opengl.Matrix;
 
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.Global.*;
+import com.ljubeboskovski.drmario.game.entity.Entity;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
 
 public class ColoredBlock extends Entity {

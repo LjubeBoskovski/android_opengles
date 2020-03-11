@@ -4,15 +4,14 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.R;
-import com.ljubeboskovski.drmario.game.entity.TexturedBlock;
+import com.ljubeboskovski.drmario.game.entity.block.DoubleBlock;
+import com.ljubeboskovski.drmario.game.entity.block.SingleBlock;
 import com.ljubeboskovski.drmario.gfx.shader.TextureShader;
-import com.ljubeboskovski.drmario.gfx.shader.ColorShader;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
 import com.ljubeboskovski.drmario.gfx.texture.ModelTexture;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
@@ -31,7 +30,8 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     private TextureMap textureMap;
 
-    private TexturedBlock textureBlock;
+    private SingleBlock singleBlock;
+//    private DoubleBlock doubleBlock;
 
     public Renderer(Context context) {
         this.context = context;
@@ -51,10 +51,14 @@ public class Renderer implements GLSurfaceView.Renderer {
 //            block.setModel(loader.loadToVAO(block.getVertices(), block.getIndices()));
 //        }
 
-        textureBlock = new TexturedBlock(1, 1, Global.BLOCK_COLOR.BLUE, textureMap);
-        RawModel model = loader.loadToVAO(textureBlock.getVertices(), Global.QuadForm.indices);
-        TexturedModel texturedModel = new TexturedModel(model, textureMap.getTexture());
-        textureBlock.setModel(texturedModel);
+        singleBlock = new SingleBlock(1, 1, Global.BLOCK_COLOR.BLUE);
+        loader.loadToVAO(singleBlock, textureMap);
+
+//
+//        doubleBlock = new DoubleBlock(3, 4, Global.BLOCK_COLOR.RED, textureMap);
+//        RawModel rawModel = loader.loadToVAO(doubleBlock.getVertices(), doubleBlock.getIndices());
+//        TexturedModel texturedModel1 = new TexturedModel(rawModel, textureMap.getTexture());
+//        doubleBlock.setModel(texturedModel1);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -69,22 +73,20 @@ public class Renderer implements GLSurfaceView.Renderer {
 
 
     private void draw() {
-        game.update();
+//        game.update();
+        singleBlock.update(1.0f);
+//        doubleBlock.update(1.0f);
 
-        drawTexture();
-    }
-
-    private void drawTexture(){
-        textureBlock.update(1.0f);
         textureShader.start();
 
-        loader.bindBuffers(textureBlock.getModel().getRawModel());
-        camera.projectModel(textureBlock.getmMatrix());
-        textureShader.bindAttributes(camera, textureBlock.getModel().getTexture());
+
+        loader.bindBuffers(singleBlock.getModel().getRawModel());
+        camera.projectModel(singleBlock.getmMatrix());
+        textureShader.bindAttributes(camera, singleBlock.getModel().getTexture());
 
 
         GLES30.glDrawElements(GLES30.GL_TRIANGLES,
-                textureBlock.getModel().getRawModel().getIndexSize(),
+                singleBlock.getModel().getRawModel().getIndexSize(),
                 GLES30.GL_UNSIGNED_SHORT, 0);
 
         textureShader.unbindAttributes();
@@ -92,6 +94,7 @@ public class Renderer implements GLSurfaceView.Renderer {
 
         textureShader.stop();
     }
+
 
     private void initGL() {
         // Set the background frame color

@@ -2,7 +2,8 @@ package com.ljubeboskovski.drmario.game.world;
 
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.Game;
-import com.ljubeboskovski.drmario.game.entity.ColoredBlock;
+import com.ljubeboskovski.drmario.game.entity.block.Block;
+import com.ljubeboskovski.drmario.game.entity.block.SingleBlock;
 
 import java.util.ArrayList;
 
@@ -10,7 +11,7 @@ public class World {
 
     private int sizeX, sizeY;
 
-    private ArrayList<ColoredBlock> blocks = new ArrayList<ColoredBlock>();
+    private ArrayList<Block> blocks = new ArrayList<Block>();
 
     public World(int sizeX, int sizeY) {
         this.sizeX = sizeX;
@@ -38,13 +39,13 @@ public class World {
                         newColor = Global.BlockColor.GREEN;
                         break;
                 }
-                ColoredBlock newBlock = new ColoredBlock(xi, yi, newColor);
-                blocks.add(newBlock);
+//                Block newBlock = new SingleBlock(xi, yi, newColor);
+//                blocks.add(newBlock);
             }
         }
     }
 
-    public ArrayList<ColoredBlock> getBlocks() {
+    public ArrayList<Block> getBlocks() {
         return blocks;
     }
 
