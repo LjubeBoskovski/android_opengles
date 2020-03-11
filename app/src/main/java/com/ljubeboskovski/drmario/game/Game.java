@@ -38,12 +38,14 @@ public class Game {
 
     public void update() {
         float scale =
-                0.3f * (float) Math.sin(((float) tickCounter / Global.FRAMES_PER_SECOND) * 2f * (float) Math.PI) + 1.0f;
+                0.8f * (float) Math.sin(((float) tickCounter / Global.FRAMES_PER_SECOND) * 2f * (float) Math.PI) + 1.8f;
         for (Block block : world.getBlocks()) {
             if (block == selectedBlock) {
                 block.setS(scale);
+                block.setZ(1.5f);
             } else {
                 block.setS(1.0f);
+                block.setZ(1.0f);
             }
             block.update();
         }

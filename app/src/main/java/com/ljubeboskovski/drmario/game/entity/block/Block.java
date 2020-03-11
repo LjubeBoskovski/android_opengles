@@ -10,7 +10,7 @@ import com.ljubeboskovski.drmario.gfx.texture.TextureMap;
 public abstract class Block extends Entity {
 
     private int worldX, worldY;
-    private float x, y, r, s;
+    private float x, y, z, r, s;
     private boolean isFloating;
     private Global.BLOCK_COLOR color;
 
@@ -25,6 +25,7 @@ public abstract class Block extends Entity {
     public Block(int x, int y, Global.BLOCK_COLOR color) {
         this.x = x;
         this.y = y;
+        this.z = 1.0f;
         worldX = x;
         worldY  = y;
         isFloating = true;
@@ -52,13 +53,13 @@ public abstract class Block extends Entity {
 
     @Override
     public void update(){
-        update(x, y, r, s);
+        update(x, y, z, r, s);
     }
 
 
-    public void update(float x, float y, float r, float s) {
+    public void update(float x, float y, float z, float r, float s) {
         Matrix.setIdentityM(mMatrix, 0);
-        Matrix.translateM(mMatrix, 0, x + 0.5f, y + 0.5f, s);
+        Matrix.translateM(mMatrix, 0, x + 0.5f, y + 0.5f, z);
         Matrix.scaleM(mMatrix, 0, s, s, 0);
         Matrix.rotateM(mMatrix, 0, r, 0.0f, 0.0f, 1.0f);
     }
@@ -83,6 +84,10 @@ public abstract class Block extends Entity {
         return y;
     }
 
+    public float getZ() {
+        return z;
+    }
+
     public float getR() {
         return r;
     }
@@ -97,6 +102,10 @@ public abstract class Block extends Entity {
 
     public void setY(float y) {
         this.y = y;
+    }
+
+    public void setZ(float z) {
+        this.z = z;
     }
 
     public void setR(float r) {

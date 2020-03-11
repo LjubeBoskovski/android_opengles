@@ -25,19 +25,17 @@ public class Texture {
     }
 
 
-    private int loadTexture(final Context context, final int resourceId)
-    {
+    private int loadTexture(final Context context, final int resourceId) {
         final int[] textureHandle = new int[1];
 
         GLES30.glGenTextures(1, textureHandle, 0);
 
-        if (textureHandle[0] == 0)
-        {
+        if (textureHandle[0] == 0) {
             throw new RuntimeException("Error generating texture name.");
         }
 
         final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;	// No pre-scaling
+        options.inScaled = false;    // No pre-scaling
 
         // Read in the resource
         final Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId, options);
@@ -48,6 +46,10 @@ public class Texture {
         // Set filtering
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_NEAREST);
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_NEAREST);
+
+        // Set the texture wrapping to not repeating, but clamping
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE);
+        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE);
 
         // Load the bitmap into the bound texture.
         GLUtils.texImage2D(GLES30.GL_TEXTURE_2D, 0, bitmap, 0);

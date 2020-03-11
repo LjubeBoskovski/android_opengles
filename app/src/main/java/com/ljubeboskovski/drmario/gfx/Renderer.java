@@ -66,19 +66,20 @@ public class Renderer implements GLSurfaceView.Renderer {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
         game.update();
 
-        long time = SystemClock.uptimeMillis() % 100L;
-        float angleInDegrees = (360.0f / 100.0f) * ((int) time);
-        float scale = (float) (0.3f * Math.sin((float)time/100.0f * 2.0f * Math.PI) + 1.0f);
+        long time = SystemClock.uptimeMillis() % 1000L;
+        float angleInDegrees = (360.0f / 1000.0f) * ((int) time);
+        float scale = (float) (0.3f * Math.sin((float)time/1000.0f * 2.0f * Math.PI) + 1.3f);
 
-        pill.update(pill.getX(), pill.getY(), angleInDegrees, scale);
+        pill.update(pill.getX(), pill.getY(), 2.0f, angleInDegrees, scale);
         draw();
     }
 
 
     private void draw() {
         textureShader.start();
-//        for(Block block : game.getWorld().getBlocks()){
-//            draw(textureShader, loader, camera, block.getmMatrix(), block.getModel());
+        for(Block block : game.getWorld().getBlocks()) {
+            draw(textureShader, loader, camera, block.getmMatrix(), block.getModel());
+        }
         draw(textureShader, loader, camera, pill.getBlockNorth().getmMatrix(),
                 pill.getBlockNorth().getModel());
         draw(textureShader, loader, camera, pill.getBlockSouth().getmMatrix(),

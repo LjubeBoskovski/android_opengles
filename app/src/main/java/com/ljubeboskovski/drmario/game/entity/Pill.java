@@ -7,7 +7,7 @@ public class Pill extends Entity {
 
 
     int worldX, worldY, worldR;
-    float x, y, r, s;
+    float x, y, z, r, s;
     boolean isFloating;
 
 
@@ -24,22 +24,25 @@ public class Pill extends Entity {
         this.y = y;
         this.r = 0.0f;
         this.s = 1.0f;
+        this.z = s;
         isFloating = true;
     }
 
     @Override
     public void update(){
         if(isFloating) {
-            update(x, y, r, s);
+            z = s + 1.0f;
+            update(x, y, z, r, s);
         } else {
-            update(worldX, worldY, worldR * 90, 1.0f);
+            z = 1.0f;
+            update(worldX, worldY, z, worldR * 90, 1.0f);
         }
     }
-    public void update(float x, float y, float r, float s) {
+    public void update(float x, float y, float z, float r, float s) {
         float xd = (float)Math.sin(Math.toRadians(r)) * 0.5f;
         float yd = (float)Math.cos(Math.toRadians(r)) * 0.5f;
-        blockNorth.update(x + xd * s, y + yd * s, -r - 90, s);
-        blockSouth.update(x - xd * s, y - yd * s, -r + 90, s);
+        blockNorth.update(x + xd * s, y + yd * s, z, -r - 90, s);
+        blockSouth.update(x - xd * s, y - yd * s, z, -r + 90, s);
     }
 
     public int getWorldX() {
@@ -56,6 +59,10 @@ public class Pill extends Entity {
 
     public float getY() {
         return y;
+    }
+
+    public float getZ() {
+        return z;
     }
 
     public float getR() {
@@ -92,6 +99,10 @@ public class Pill extends Entity {
 
     public void setY(float y) {
         this.y = y;
+    }
+
+    public void setZ(float z) {
+        this.z = z;
     }
 
     public void setR(float r) {
