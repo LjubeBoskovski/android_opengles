@@ -17,6 +17,7 @@ import com.ljubeboskovski.drmario.gfx.model.RawModel;
 import com.ljubeboskovski.drmario.gfx.texture.ModelTexture;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
 import com.ljubeboskovski.drmario.game.Game;
+import com.ljubeboskovski.drmario.gfx.texture.TextureMap;
 
 
 public class Renderer implements GLSurfaceView.Renderer {
@@ -27,6 +28,8 @@ public class Renderer implements GLSurfaceView.Renderer {
     private Loader loader;
     private Camera camera;
     private Game game;
+
+    private TextureMap textureMap;
 
     private TexturedBlock textureBlock;
 
@@ -41,14 +44,16 @@ public class Renderer implements GLSurfaceView.Renderer {
         loader = new Loader(context);
         camera = new Camera();
 
+        ModelTexture texture = new ModelTexture(loader.loadTexture(R.drawable.blocks_spritemap));
+        textureMap = new TextureMap(8, texture);
+
 //        for (Block block : game.getWorld().getBlocks()) {
 //            block.setModel(loader.loadToVAO(block.getVertices(), block.getIndices()));
 //        }
 
-        ModelTexture texture = new ModelTexture(loader.loadTexture(R.drawable.blocks_spritemap));
-        textureBlock = new TexturedBlock(1, 1, Global.BlockColor.BLUE, texture);
+        textureBlock = new TexturedBlock(1, 1, Global.BLOCK_COLOR.BLUE, textureMap);
         RawModel model = loader.loadToVAO(textureBlock.getVertices(), Global.QuadForm.indices);
-        TexturedModel texturedModel = new TexturedModel(model, texture);
+        TexturedModel texturedModel = new TexturedModel(model, textureMap.getTexture());
         textureBlock.setModel(texturedModel);
     }
 
@@ -73,7 +78,6 @@ public class Renderer implements GLSurfaceView.Renderer {
         textureBlock.update(1.0f);
         textureShader.start();
 
-//        for (Block block : game.getWorld().getBlocks()) {
         loader.bindBuffers(textureBlock.getModel().getRawModel());
         camera.projectModel(textureBlock.getmMatrix());
         textureShader.bindAttributes(camera, textureBlock.getModel().getTexture());
@@ -85,14 +89,13 @@ public class Renderer implements GLSurfaceView.Renderer {
 
         textureShader.unbindAttributes();
         loader.unbindBuffers();
-//        }
 
         textureShader.stop();
     }
 
     private void initGL() {
         // Set the background frame color
-        GLES30.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GLES30.glClearColor(0.2f, 0.0f, 0.1f, 1.0f);
 
         // Use culling to remove back faces.
         GLES30.glEnable(GLES30.GL_CULL_FACE);
