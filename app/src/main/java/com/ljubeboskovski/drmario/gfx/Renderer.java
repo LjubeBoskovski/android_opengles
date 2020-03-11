@@ -7,8 +7,13 @@ import android.content.Context;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 
+import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.R;
+import com.ljubeboskovski.drmario.game.entity.Pill;
 import com.ljubeboskovski.drmario.game.entity.block.Block;
+import com.ljubeboskovski.drmario.gfx.model.RawModel;
+import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
+import com.ljubeboskovski.drmario.gfx.shader.ShaderProgram;
 import com.ljubeboskovski.drmario.gfx.shader.TextureShader;
 import com.ljubeboskovski.drmario.gfx.texture.ModelTexture;
 import com.ljubeboskovski.drmario.game.Game;
@@ -25,6 +30,8 @@ public class Renderer implements GLSurfaceView.Renderer {
     private Game game;
 
     private TextureMap textureMap;
+
+    private Pill pill;
 
     public Renderer(Context context) {
         this.context = context;
@@ -43,6 +50,8 @@ public class Renderer implements GLSurfaceView.Renderer {
         for (Block block : game.getWorld().getBlocks()) {
             loader.loadToVAO(block, textureMap);
         }
+
+        pill = new Pill(3, 3, Global.BLOCK_COLOR.RED, Global.BLOCK_COLOR.YELLOW);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -52,31 +61,32 @@ public class Renderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
+        game.update();
         draw();
     }
 
 
     private void draw() {
-        game.update();
-
         textureShader.start();
-        for (Block block : game.getWorld().getBlocks()) {
-
-            loader.bindBuffers(block.getModel().getRawModel());
-            camera.projectModel(block.getmMatrix());
-            textureShader.bindAttributes(camera, block.getModel().getTexture());
-
-
-            GLES30.glDrawElements(GLES30.GL_TRIANGLES,
-                    block.getModel().getRawModel().getIndexSize(),
-                    GLES30.GL_UNSIGNED_SHORT, 0);
-
-            textureShader.unbindAttributes();
-            loader.unbindBuffers();
+        for(Block block : game.getWorld().getBlocks()){
+            draw(textureShader, loader, camera, block.getmMatrix(), block.getModel());
         }
         textureShader.stop();
     }
 
+    private void draw(ShaderProgram shader, Loader loader, Camera camera,
+                      float[] mMatrix, TexturedModel model) {
+        loader.bindBuffers(model.getRawModel());
+        camera.projectModel(mMatrix);
+        shader.bindAttributes(camera, model.getTexture());
+
+
+        GLES30.glDrawElements(GLES30.GL_TRIANGLES, model.getRawModel().getIndexSize(),
+                GLES30.GL_UNSIGNED_SHORT, 0);
+
+        shader.unbindAttributes();
+        loader.unbindBuffers();
+    }
 
     private void initGL() {
         // Set the background frame color

@@ -9,8 +9,9 @@ import com.ljubeboskovski.drmario.gfx.texture.TextureMap;
 
 public abstract class Block extends Entity {
 
-    private float x;
-    private float y;
+    private int worldX, worldY;
+    private float x, y, r, s;
+    private boolean isFloating;
     private Global.BLOCK_COLOR color;
 
     private float[] colorVector;
@@ -24,6 +25,9 @@ public abstract class Block extends Entity {
     public Block(int x, int y, Global.BLOCK_COLOR color) {
         this.x = x;
         this.y = y;
+        worldX = x;
+        worldY  = y;
+        isFloating = true;
         this.color = color;
         switch (color) {
             case RED:
@@ -43,13 +47,20 @@ public abstract class Block extends Entity {
                 textureMapY = 3;
                 break;
         }
-        update(0.0f);
+        update();
     }
-    public void update(float scale) {
+
+    @Override
+    public void update(){
+        update(x, y, r, s);
+    }
+
+
+    public void update(float x, float y, float r, float s) {
         Matrix.setIdentityM(mMatrix, 0);
-        Matrix.translateM(mMatrix, 0, x + 0.5f, y + 0.5f, scale);
-        Matrix.scaleM(mMatrix, 0, scale, scale, 0);
-        Matrix.rotateM(mMatrix, 0, 0f, 0.0f, 0.0f, 1.0f);
+        Matrix.translateM(mMatrix, 0, x + 0.5f, y + 0.5f, s);
+        Matrix.scaleM(mMatrix, 0, s, s, 0);
+        Matrix.rotateM(mMatrix, 0, r, 0.0f, 0.0f, 1.0f);
     }
 
     public TexturedModel getModel() {
@@ -70,6 +81,30 @@ public abstract class Block extends Entity {
 
     public float getY() {
         return y;
+    }
+
+    public float getR() {
+        return r;
+    }
+
+    public float getS() {
+        return s;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public void setR(float r) {
+        this.r = r;
+    }
+
+    public void setS(float s) {
+        this.s = s;
     }
 
     public float[] getColorVector() {

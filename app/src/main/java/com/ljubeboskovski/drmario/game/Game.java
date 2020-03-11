@@ -36,15 +36,16 @@ public class Game {
         }
     }
 
-    public void update(){
+    public void update() {
         float scale =
                 0.3f * (float) Math.sin(((float) tickCounter / Global.FRAMES_PER_SECOND) * 2f * (float) Math.PI) + 1.0f;
         for (Block block : world.getBlocks()) {
             if (block == selectedBlock) {
-                block.update(scale);
+                block.setS(scale);
             } else {
-                block.update(1.0f);
+                block.setS(1.0f);
             }
+            block.update();
         }
     }
 

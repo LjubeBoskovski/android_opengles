@@ -1,6 +1,7 @@
 package com.ljubeboskovski.drmario.gfx;
 
 import com.ljubeboskovski.drmario.Global;
+import com.ljubeboskovski.drmario.game.entity.Pill;
 import com.ljubeboskovski.drmario.game.entity.block.Block;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
