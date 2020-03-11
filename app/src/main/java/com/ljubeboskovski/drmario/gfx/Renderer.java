@@ -6,6 +6,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
+import android.os.SystemClock;
 
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.R;
@@ -52,6 +53,8 @@ public class Renderer implements GLSurfaceView.Renderer {
         }
 
         pill = new Pill(3, 3, Global.BLOCK_COLOR.RED, Global.BLOCK_COLOR.YELLOW);
+        loader.loadToVAO(pill.getBlockNorth(), textureMap);
+        loader.loadToVAO(pill.getBlockSouth(), textureMap);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -62,15 +65,24 @@ public class Renderer implements GLSurfaceView.Renderer {
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
         game.update();
+
+        long time = SystemClock.uptimeMillis() % 100L;
+        float angleInDegrees = (360.0f / 100.0f) * ((int) time);
+        float scale = (float) (0.3f * Math.sin((float)time/100.0f * 2.0f * Math.PI) + 1.0f);
+
+        pill.update(pill.getX(), pill.getY(), angleInDegrees, scale);
         draw();
     }
 
 
     private void draw() {
         textureShader.start();
-        for(Block block : game.getWorld().getBlocks()){
-            draw(textureShader, loader, camera, block.getmMatrix(), block.getModel());
-        }
+//        for(Block block : game.getWorld().getBlocks()){
+//            draw(textureShader, loader, camera, block.getmMatrix(), block.getModel());
+        draw(textureShader, loader, camera, pill.getBlockNorth().getmMatrix(),
+                pill.getBlockNorth().getModel());
+        draw(textureShader, loader, camera, pill.getBlockSouth().getmMatrix(),
+                pill.getBlockSouth().getModel());
         textureShader.stop();
     }
 
