@@ -15,8 +15,8 @@ public abstract class ShaderProgram {
     private Context context;
     private int programID;
 
-    private static LinkedList<Attribute> attributes = new LinkedList<Attribute>();
-    private static LinkedList<Uniform> uniforms = new LinkedList<Uniform>();
+    private LinkedList<Attribute> attributes = new LinkedList<Attribute>();
+    private LinkedList<Uniform> uniforms = new LinkedList<Uniform>();
 
     private int mvMatrixHandle;
     private int mvpMatrixHandle;

@@ -41,7 +41,7 @@ public class Renderer implements GLSurfaceView.Renderer {
         initGL();
 
         textureShader = new TextureShader(context);
-//        colorShader = new ColorShader(context);
+        colorShader = new ColorShader(context);
         loader = new Loader(context);
         camera = new Camera();
 
@@ -49,9 +49,9 @@ public class Renderer implements GLSurfaceView.Renderer {
 //            block.setModel(loader.loadToVAO(block.getVertices(), block.getIndices()));
 //        }
 
-//        colorBlock = new Block(0, 0, Global.BlockColor.BLUE);
-//        RawModel model = loader.loadToVAO(colorBlock.getVertices(), colorBlock.getIndices());
-//        colorBlock.setModel(model);
+        colorBlock = new Block(0, 0, Global.BlockColor.BLUE);
+        RawModel model = loader.loadToVAO(colorBlock.getVertices(), colorBlock.getIndices());
+        colorBlock.setModel(model);
 
         textureBlock = new TexturedBlock(1, 1, Global.BlockColor.BLUE);
         RawModel textureModel = loader.loadToVAO(textureBlock.getVertices(), textureBlock.getIndices());
@@ -74,7 +74,7 @@ public class Renderer implements GLSurfaceView.Renderer {
     private void draw() {
         game.update();
 
-//        drawColor();
+        drawColor();
         drawTexture();
     }
 
