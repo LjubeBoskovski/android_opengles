@@ -1,6 +1,7 @@
 package com.ljubeboskovski.drmario.gfx.model;
 
 import com.ljubeboskovski.drmario.gfx.texture.ModelTexture;
+import com.ljubeboskovski.drmario.gfx.texture.Texture;
 
 public class TexturedModel {
 

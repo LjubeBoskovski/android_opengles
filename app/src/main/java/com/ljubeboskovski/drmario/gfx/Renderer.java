@@ -16,7 +16,6 @@ import com.ljubeboskovski.drmario.gfx.shader.ColorShader;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
 import com.ljubeboskovski.drmario.gfx.texture.ModelTexture;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
-import com.ljubeboskovski.drmario.game.entity.Block;
 import com.ljubeboskovski.drmario.game.Game;
 
 
@@ -24,13 +23,11 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     private Context context;
 
-    private ColorShader colorShader;
     private TextureShader textureShader;
     private Loader loader;
     private Camera camera;
     private Game game;
 
-    private Block colorBlock;
     private TexturedBlock textureBlock;
 
     public Renderer(Context context) {
@@ -41,7 +38,6 @@ public class Renderer implements GLSurfaceView.Renderer {
         initGL();
 
         textureShader = new TextureShader(context);
-        colorShader = new ColorShader(context);
         loader = new Loader(context);
         camera = new Camera();
 
@@ -49,14 +45,10 @@ public class Renderer implements GLSurfaceView.Renderer {
 //            block.setModel(loader.loadToVAO(block.getVertices(), block.getIndices()));
 //        }
 
-        colorBlock = new Block(0, 0, Global.BlockColor.BLUE);
-        RawModel model = loader.loadToVAO(colorBlock.getVertices(), colorBlock.getIndices());
-        colorBlock.setModel(model);
-
-        textureBlock = new TexturedBlock(1, 1, Global.BlockColor.BLUE);
-        RawModel textureModel = loader.loadToVAO(textureBlock.getVertices(), textureBlock.getIndices());
         ModelTexture texture = new ModelTexture(loader.loadTexture(R.drawable.blocks_spritemap));
-        TexturedModel texturedModel = new TexturedModel(textureModel, texture);
+        textureBlock = new TexturedBlock(1, 1, Global.BlockColor.BLUE, texture);
+        RawModel model = loader.loadToVAO(textureBlock.getVertices(), Global.QuadForm.indices);
+        TexturedModel texturedModel = new TexturedModel(model, texture);
         textureBlock.setModel(texturedModel);
     }
 
@@ -74,28 +66,7 @@ public class Renderer implements GLSurfaceView.Renderer {
     private void draw() {
         game.update();
 
-        drawColor();
         drawTexture();
-    }
-
-    private void drawColor(){
-        colorBlock.update(1.0f);
-        colorShader.start();
-
-//        for (Block block : game.getWorld().getBlocks()) {
-        loader.bindBuffers(colorBlock.getModel());
-        camera.projectModel(colorBlock.getmMatrix());
-
-        colorShader.bindAttributes(camera);
-        GLES30.glDrawElements(GLES30.GL_TRIANGLES,
-                colorBlock.getModel().getIndexSize(),
-                GLES30.GL_UNSIGNED_SHORT, 0);
-
-        colorShader.unbindAttributes();
-        loader.unbindBuffers();
-//        }
-
-        colorShader.stop();
     }
 
     private void drawTexture(){

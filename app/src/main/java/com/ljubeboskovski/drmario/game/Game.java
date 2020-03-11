@@ -1,7 +1,7 @@
 package com.ljubeboskovski.drmario.game;
 
 import com.ljubeboskovski.drmario.Global;
-import com.ljubeboskovski.drmario.game.entity.Block;
+import com.ljubeboskovski.drmario.game.entity.ColoredBlock;
 import com.ljubeboskovski.drmario.game.world.World;
 
 import java.util.Random;
@@ -13,7 +13,7 @@ public class Game {
     public static Random random;
 
     private World world;
-    private Block selectedBlock = null;
+    private ColoredBlock selectedBlock = null;
     private Timer timer;
     private int tickCounter = -1;
 
@@ -38,7 +38,7 @@ public class Game {
     public void update(){
         float scale =
                 0.3f * (float) Math.sin(((float) tickCounter / Global.FRAMES_PER_SECOND) * 2f * (float) Math.PI) + 1.0f;
-        for (Block block : world.getBlocks()) {
+        for (ColoredBlock block : world.getBlocks()) {
             if (block == selectedBlock) {
                 block.update(scale);
             } else {
@@ -54,8 +54,8 @@ public class Game {
         selectedBlock = getSelectedBlock(xBlock, yBlock);
     }
 
-    private Block getSelectedBlock(int x, int y) {
-        for (Block block : world.getBlocks()) {
+    private ColoredBlock getSelectedBlock(int x, int y) {
+        for (ColoredBlock block : world.getBlocks()) {
             if (block.getX() == x && block.getY() == y) {
                 return block;
             }
@@ -68,7 +68,7 @@ public class Game {
         return world;
     }
 
-    public Block getSelectedBlock() {
+    public ColoredBlock getSelectedBlock() {
         return selectedBlock;
     }
 

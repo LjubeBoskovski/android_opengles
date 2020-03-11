@@ -2,7 +2,7 @@ package com.ljubeboskovski.drmario.game.world;
 
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.Game;
-import com.ljubeboskovski.drmario.game.entity.Block;
+import com.ljubeboskovski.drmario.game.entity.ColoredBlock;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,7 @@ public class World {
 
     private int sizeX, sizeY;
 
-    private ArrayList<Block> blocks = new ArrayList<Block>();
+    private ArrayList<ColoredBlock> blocks = new ArrayList<ColoredBlock>();
 
     public World(int sizeX, int sizeY) {
         this.sizeX = sizeX;
@@ -23,7 +23,7 @@ public class World {
         for (int yi = 0; yi < sizeY; yi++) {
             for (int xi = 0; xi < sizeX; xi++) {
                 int randomInteger = Game.random.nextInt(4);
-                Global.BlockColor newColor;
+                float[] newColor;
                 switch(randomInteger) {
                     case 0:
                         newColor = Global.BlockColor.RED;
@@ -38,13 +38,13 @@ public class World {
                         newColor = Global.BlockColor.GREEN;
                         break;
                 }
-                Block newBlock = new Block(xi, yi, newColor);
+                ColoredBlock newBlock = new ColoredBlock(xi, yi, newColor);
                 blocks.add(newBlock);
             }
         }
     }
 
-    public ArrayList<Block> getBlocks() {
+    public ArrayList<ColoredBlock> getBlocks() {
         return blocks;
     }
 

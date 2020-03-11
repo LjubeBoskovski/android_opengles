@@ -66,7 +66,7 @@ public class Texture {
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
     }
 
-    public int getTextureID() {
+    public int getID() {
         return handle;
     }
 

@@ -39,6 +39,27 @@ public class Loader {
         return new RawModel(vboID, iboID, indices.length);
     }
 
+    public RawModel loadToVAO(float[] coordinates, float[] color, float[] texCoordinates,
+                              short[] indices) {
+        int verticesSize =
+                coordinates.length + (coordinates.length / Global.SIZE_POSITION) * (Global.SIZE_COLOR + Global.SIZE_TEXTURE_COORDS);
+        float[] vertices = new float[verticesSize];
+
+        int j = 0;
+        for(int i = 0; i < coordinates.length / Global.SIZE_POSITION; i++){
+            for(int k = 0; k < Global.SIZE_POSITION; k++) {
+                vertices[j++] = coordinates[i * Global.SIZE_POSITION + k];
+            }
+            for(int k = 0; k < Global.SIZE_COLOR; k++) {
+                vertices[j++] = color[k];
+            }
+            for(int k = 0; k < Global.SIZE_TEXTURE_COORDS; k++) {
+                vertices[j++] = texCoordinates[i * Global.SIZE_TEXTURE_COORDS + k];
+            }
+        }
+        return loadToVAO(vertices, indices);
+    }
+
     private int createVBO() {
         final int[] bo = new int[1];
         GLES30.glGenBuffers(1, bo, 0);
@@ -94,7 +115,7 @@ public class Loader {
 
         public int loadTexture(int resourceID) {
         Texture texture = new Texture(context, resourceID);
-        int textureID = texture.getTextureID();
+        int textureID = texture.getID();
         textures.add(textureID);
         return textureID;
     }

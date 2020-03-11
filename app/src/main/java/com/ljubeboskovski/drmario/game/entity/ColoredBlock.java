@@ -5,19 +5,17 @@ import android.opengl.Matrix;
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.Global.*;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
-import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
-import com.ljubeboskovski.drmario.gfx.texture.ModelTexture;
 
-public class TexturedBlock extends Entity {
+public class ColoredBlock extends Entity {
 
     private float x;
     private float y;
     private float[] color;
 
-    private TexturedModel model;
+    private RawModel model;
     public float[] mMatrix = new float[16];
 
-    public TexturedBlock(int x, int y, float[] color, ModelTexture texture) {
+    public ColoredBlock(int x, int y, float[] color) {
         this.x = x;
         this.y = y;
         this.color = color;
@@ -31,7 +29,7 @@ public class TexturedBlock extends Entity {
         Matrix.rotateM(mMatrix, 0, 0f, 0.0f, 0.0f, 1.0f);
     }
 
-    public TexturedModel getModel() {
+    public RawModel getModel() {
         return model;
     }
 
@@ -39,34 +37,11 @@ public class TexturedBlock extends Entity {
         return mMatrix;
     }
 
-    public void setModel(TexturedModel model) {
-        this.model = model;
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public float[] getVertices(){
+    public float[] getVertices() {
         float[] coordinates = QuadForm.coordinates;
 
-        int smx = 2;
-        int smy = 1;
-        int smsize = 8;
-
-        float[] texCoordinates = {
-                ((float) smx) / smsize, ((float) smy + 1) / smsize,
-                ((float) smx + 1) / smsize, ((float) smy + 1) / smsize,
-                ((float) smx + 1) / smsize, ((float) smy) / smsize,
-                ((float) smx) / smsize, ((float) smy) / smsize
-        };
-
         int verticesSize =
-                coordinates.length + (coordinates.length / Global.SIZE_POSITION) * (Global.SIZE_COLOR + Global.SIZE_TEXTURE_COORDS);
+                coordinates.length + (coordinates.length / Global.SIZE_POSITION) * (Global.SIZE_COLOR);
         float[] vertices = new float[verticesSize];
 
         int j = 0;
@@ -77,11 +52,23 @@ public class TexturedBlock extends Entity {
             for(int k = 0; k < Global.SIZE_COLOR; k++) {
                 vertices[j++] = color[k];
             }
-            for(int k = 0; k < Global.SIZE_TEXTURE_COORDS; k++) {
-                vertices[j++] = texCoordinates[i * Global.SIZE_TEXTURE_COORDS + k];
-            }
         }
         return vertices;
     }
 
+    public short[] getIndices() {
+        return QuadForm.indices;
+    }
+
+    public void setModel(RawModel model) {
+        this.model = model;
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
 }
