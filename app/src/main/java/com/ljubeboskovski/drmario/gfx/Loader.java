@@ -82,7 +82,7 @@ public class Loader {
     public void bindBuffers(TexturedModel model) {
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, model.getTexture().getID());
-        GLES30.glUniform1i(model.getTexture().getID(), 0);
+//        GLES30.glUniform1i(, 0);
         bindBuffers(model.getRawModel());
     }
 

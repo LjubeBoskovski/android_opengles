@@ -41,15 +41,16 @@ public class TexturedBlock extends Entity {
     int smsize = 8;
 
     float[] textureCoords = {
-//                ((float) smx) / smsize, ((float) smy + 1) / smsize,
-//                ((float) smx + 1) / smsize, ((float) smy + 1) / smsize,
-//                ((float) smx + 1) / smsize, ((float) smy) / smsize,
-//                ((float) smx) / smsize, ((float) smy) / smsize
+//            TODO: change to correct indices
+                ((float) smx) / smsize, ((float) smy + 1) / smsize,
+                ((float) smx + 1) / smsize, ((float) smy + 1) / smsize,
+                ((float) smx + 1) / smsize, ((float) smy) / smsize,
+                ((float) smx) / smsize, ((float) smy) / smsize
 
-            0f, 1f,
-            1f, 1f,
-            1f, 0f,
-            0f, 0f
+//            0f, 1f,
+//            1f, 1f,
+//            1f, 0f,
+//            0f, 0f
     };
 
 

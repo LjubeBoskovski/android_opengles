@@ -3,10 +3,10 @@ uniform mat4 u_MVMatrix;
 
 attribute vec4 aPosition;
 attribute vec4 aColor;
-attribute vec4 aTextureCoordinate;
+attribute vec2 aTextureCoordinate;
 
 varying vec4 vColor;
-varying vec4 vTextureCoordinate;
+varying vec2 vTextureCoordinate;
 
 void main() {
     vColor = aColor;

@@ -12,13 +12,14 @@ import com.ljubeboskovski.drmario.util.RawResourceReader;
 public abstract class ShaderProgram {
 
     private Context context;
-    private int programID;
+    public int programID; //FixMe
 
     private static LinkedList<Attribute> attributes = new LinkedList<Attribute>();
     private static LinkedList<Uniform> uniforms = new LinkedList<Uniform>();
 
     private int mvMatrixHandle;
     private int mvpMatrixHandle;
+    public int textureHandle; //FixMe: private
 
 
     ShaderProgram(Context context, int vertexResourceID, int fragmentResourceID) {
@@ -35,17 +36,19 @@ public abstract class ShaderProgram {
 
         mvpMatrixHandle = GLES30.glGetUniformLocation(programID, "u_MVPMatrix");
         mvMatrixHandle = GLES30.glGetUniformLocation(programID, "u_MVMatrix");
+        textureHandle = GLES30.glGetUniformLocation(programID, "uTexture");
+
     }
 
     void addAttribute(String name, int size, int type, int typeSize, boolean normalized) {
         int handle = GLES30.glGetAttribLocation(programID, name);
         int newOffset = 0;
         int newStride = size * typeSize;
-        if(!attributes.isEmpty()) {
+        if (!attributes.isEmpty()) {
             Attribute lastAttribute = attributes.getLast();
             newOffset = lastAttribute.offset + lastAttribute.size * typeSize;
             newStride = lastAttribute.stride + size * typeSize;
-            for(Attribute attr : attributes){
+            for (Attribute attr : attributes) {
                 attr.stride = newStride;
             }
         }
@@ -55,8 +58,7 @@ public abstract class ShaderProgram {
         attributes.add(newAttribute);
     }
 
-    public Uniform addUniform(String name, )
-
+//    public Uniform addUniform(String name,)
 
 
     public void start() {
@@ -85,6 +87,7 @@ public abstract class ShaderProgram {
         }
         GLES30.glUniformMatrix4fv(mvMatrixHandle, 1, false, camera.mvMatrix, 0);
         GLES30.glUniformMatrix4fv(mvpMatrixHandle, 1, false, camera.mvpMatrix, 0);
+//        GLES30.glUniform1i(textureHandle, 0);
     }
 
     public void unbindAttributes() {
@@ -108,8 +111,7 @@ public abstract class ShaderProgram {
         GLES30.glGetShaderiv(shader, GLES30.GL_COMPILE_STATUS, compileStatus, 0);
 
         // If the compilation failed, delete the shader.
-        if (compileStatus[0] == 0)
-        {
+        if (compileStatus[0] == 0) {
             Log.e("ShaderProgram",
                     "Error compiling shader: " + GLES30.glGetShaderInfoLog(shader));
             GLES30.glDeleteShader(shader);
