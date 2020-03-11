@@ -24,23 +24,23 @@ public class World {
         for (int yi = 0; yi < sizeY; yi++) {
             for (int xi = 0; xi < sizeX; xi++) {
                 int randomInteger = Game.random.nextInt(4);
-                float[] newColor;
+                Global.BLOCK_COLOR newColor;
                 switch(randomInteger) {
                     case 0:
-                        newColor = Global.BlockColor.RED;
+                        newColor = Global.BLOCK_COLOR.RED;
                         break;
                     case 1:
-                        newColor = Global.BlockColor.YELLOW;
+                        newColor = Global.BLOCK_COLOR.YELLOW;
                         break;
                     case 2:
-                        newColor = Global.BlockColor.BLUE;
+                        newColor = Global.BLOCK_COLOR.BLUE;
                         break;
                     default:
-                        newColor = Global.BlockColor.GREEN;
+                        newColor = Global.BLOCK_COLOR.GREEN;
                         break;
                 }
-//                Block newBlock = new SingleBlock(xi, yi, newColor);
-//                blocks.add(newBlock);
+                Block newBlock = new SingleBlock(xi, yi, newColor);
+                blocks.add(newBlock);
             }
         }
     }
