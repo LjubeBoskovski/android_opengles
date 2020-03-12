@@ -4,7 +4,6 @@ import android.opengl.Matrix;
 
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.entity.TexturedEntity;
-import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
 
 public abstract class Block extends TexturedEntity {
 

@@ -1,6 +1,7 @@
 package com.ljubeboskovski.drmario.game;
 
 import com.ljubeboskovski.drmario.Global;
+import com.ljubeboskovski.drmario.game.entity.Virus;
 import com.ljubeboskovski.drmario.game.entity.block.Block;
 import com.ljubeboskovski.drmario.game.entity.block.ColoredBlock;
 import com.ljubeboskovski.drmario.game.world.World;
@@ -33,6 +34,9 @@ public class Game {
         @Override
         public void run() {
             tickCounter++;
+            for(Virus virus : world.getViruses()){
+                virus.incCounter();
+            }
         }
     }
 

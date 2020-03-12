@@ -7,7 +7,7 @@ public class TexturedEntity extends Entity {
 
     protected int textureMapX = -1;
     protected int textureMapY = -1;
-    private TexturedModel model;
+    protected TexturedModel model;
 
     public TexturedEntity(float x, float y) {
         super(x, y);

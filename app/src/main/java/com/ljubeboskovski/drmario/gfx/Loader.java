@@ -1,7 +1,7 @@
 package com.ljubeboskovski.drmario.gfx;
 
 import com.ljubeboskovski.drmario.Global;
-import com.ljubeboskovski.drmario.game.entity.Pill;
+import com.ljubeboskovski.drmario.game.entity.Virus;
 import com.ljubeboskovski.drmario.game.entity.block.Block;
 import com.ljubeboskovski.drmario.gfx.model.RawModel;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
@@ -67,6 +67,38 @@ public class Loader {
         RawModel model = loadToVAO(vertices, Global.QuadForm.indices);
         TexturedModel texturedModel = new TexturedModel(model, textureMap.getTexture());
         block.setModel(texturedModel);
+    }
+
+    public void loadToVAO(Virus virus, TextureMap textureMap){
+        float[] coordinates = Global.QuadForm.coordinates;
+        float[] color = virus.getColorVector();
+        int[] texMapCoordinates = virus.getTexMapCoordinates();
+
+        for(int n = 0; n < virus.getNumberOfAnimations(); n++) {
+            int texMapX = texMapCoordinates[2 * n];
+            int texMapY = texMapCoordinates[2 * n + 1];
+            float[] texCoordinates = textureMap.getTexCoordinates(texMapX, texMapY);
+
+            int verticesSize =
+                    coordinates.length + (coordinates.length / Global.SIZE_POSITION) * (Global.SIZE_COLOR + Global.SIZE_TEXTURE_COORDS);
+            float[] vertices = new float[verticesSize];
+
+            int j = 0;
+            for(int i = 0; i < coordinates.length / Global.SIZE_POSITION; i++){
+                for(int k = 0; k < Global.SIZE_POSITION; k++) {
+                    vertices[j++] = coordinates[i * Global.SIZE_POSITION + k];
+                }
+                for(int k = 0; k < Global.SIZE_COLOR; k++) {
+                    vertices[j++] = color[k];
+                }
+                for(int k = 0; k < Global.SIZE_TEXTURE_COORDS; k++) {
+                    vertices[j++] = texCoordinates[i * Global.SIZE_TEXTURE_COORDS + k];
+                }
+            }
+            RawModel model = loadToVAO(vertices, Global.QuadForm.indices);
+            TexturedModel texturedModel = new TexturedModel(model, textureMap.getTexture());
+            virus.addModel(texturedModel);
+        }
     }
 
     private int createVBO() {
@@ -171,9 +203,5 @@ public class Loader {
         indexBuffer.position(0);
         return indexBuffer;
     }
-
-//    public static float[] getVertices(int numOfVertices, float[][] arrays) {
-//
-//    }
 
 }

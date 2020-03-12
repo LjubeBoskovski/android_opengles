@@ -2,6 +2,7 @@ package com.ljubeboskovski.drmario.game.world;
 
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.Game;
+import com.ljubeboskovski.drmario.game.entity.Virus;
 import com.ljubeboskovski.drmario.game.entity.block.Block;
 import com.ljubeboskovski.drmario.game.entity.block.SingleBlock;
 
@@ -12,6 +13,7 @@ public class World {
     private int sizeX, sizeY;
 
     private ArrayList<Block> blocks = new ArrayList<Block>();
+    private ArrayList<Virus> viruses = new ArrayList<Virus>();
 
     public World(int sizeX, int sizeY) {
         this.sizeX = sizeX;
@@ -45,10 +47,6 @@ public class World {
         }
     }
 
-    public ArrayList<Block> getBlocks() {
-        return blocks;
-    }
-
     public int getSizeX() {
         return sizeX;
     }
@@ -57,4 +55,16 @@ public class World {
         return sizeY;
     }
 
+    public ArrayList<Block> getBlocks() {
+        return blocks;
+    }
+
+    public ArrayList<Virus> getViruses() {
+        return viruses;
+    }
+
+    public void addVirus(Virus virus) {
+        viruses.add(virus);
+
+    }
 }
