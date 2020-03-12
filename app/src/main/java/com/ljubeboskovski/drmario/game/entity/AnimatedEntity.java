@@ -19,7 +19,7 @@ public class AnimatedEntity extends TexturedEntity {
         counter = 0;
     }
 
-    public void incCounter() {
+    public void tick() {
         counter++;
     }
 

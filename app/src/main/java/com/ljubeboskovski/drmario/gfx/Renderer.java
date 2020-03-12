@@ -54,6 +54,10 @@ public class Renderer implements GLSurfaceView.Renderer {
         for (Virus virus : game.getWorld().getViruses()){
             loader.loadToVAO(virus, textureMap);
         }
+        for (Pill pill : game.getWorld().getPills()){
+            loader.loadToVAO(pill.getBlockNorth(), textureMap);
+            loader.loadToVAO(pill.getBlockSouth(), textureMap);
+        }
 
         pill = new Pill(0, 0, Global.BLOCK_COLOR.RED, Global.BLOCK_COLOR.YELLOW);
         loader.loadToVAO(pill.getBlockNorth(), textureMap);
@@ -87,6 +91,12 @@ public class Renderer implements GLSurfaceView.Renderer {
         }
         for(Virus virus : game.getWorld().getViruses()) {
             draw(textureShader, loader, camera, virus.getmMatrix(), virus.getModel());
+        }
+        for(Pill pill : game.getWorld().getPills()) {
+            draw(textureShader, loader, camera, pill.getBlockNorth().getmMatrix(),
+                    pill.getBlockNorth().getModel());
+            draw(textureShader, loader, camera, pill.getBlockSouth().getmMatrix(),
+                    pill.getBlockSouth().getModel());
         }
 
         draw(textureShader, loader, camera, pill.getBlockNorth().getmMatrix(),

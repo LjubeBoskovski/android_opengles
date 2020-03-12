@@ -38,6 +38,30 @@ public abstract class Entity {
         this.s = s;
     }
 
+    public void moveUp() {
+        y++;
+    }
+
+    public void moveDown() {
+        y--;
+    }
+
+    public void moveLeft() {
+        x--;
+    }
+
+    public void moveRight() {
+        x++;
+    }
+
+    public void rotateClockwise() {
+        r -= 90;
+    }
+
+    public void rotateCounterClockwise() {
+        r += 90;
+    }
+
     public float getX() {
         return x;
     }

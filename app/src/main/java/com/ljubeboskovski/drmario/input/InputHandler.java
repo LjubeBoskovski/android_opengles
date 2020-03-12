@@ -43,9 +43,9 @@ public class InputHandler {
         float x = event.getX()/widthPixels;
         float y = event.getY()/heightPixels;
 
-        float xOnWorld = x * (float)game.getWorld().getSizeX();
-        float yOnWorld = -1.0f * y * (float)game.getWorld().getSizeY() + (float)game.getWorld().getSizeY();
+//        float xOnWorld = x * (float)game.getWorld().getSizeX();
+//        float yOnWorld = -1.0f * y * (float)game.getWorld().getSizeY() + (float)game.getWorld().getSizeY();
 
-        game.touch(xOnWorld, yOnWorld);
+        game.touch(x, y);
     }
 }
