@@ -19,10 +19,14 @@ import com.ljubeboskovski.drmario.gfx.Renderer;
 import com.ljubeboskovski.drmario.gfx.SurfaceView;
 import com.ljubeboskovski.drmario.input.InputHandler;
 
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 public class MainActivity extends Activity {
 
     private SurfaceView surfaceView;
     private Game game;
+    private ReadWriteLock lock;
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -48,12 +52,16 @@ public class MainActivity extends Activity {
             final DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
+            // Create the read write lock for thread safety
+            lock = new ReentrantReadWriteLock();
+
             // Set the Renderer for drawing on the GLSurfaceView
-            com.ljubeboskovski.drmario.gfx.Renderer renderer = new com.ljubeboskovski.drmario.gfx.Renderer(this);
+            com.ljubeboskovski.drmario.gfx.Renderer renderer =
+                    new com.ljubeboskovski.drmario.gfx.Renderer(this, lock);
             surfaceView.setRenderer(renderer);
 
             // Create game
-            game = new Game();
+            game = new Game(lock);
             renderer.setGame(game);
 
             // Set the Input Handler
@@ -62,7 +70,6 @@ public class MainActivity extends Activity {
                     displayMetrics.heightPixels);
             surfaceView.setInputHandler(inputHandler);
 
-            game.start();
         } else {
             Log.println(Log.ERROR, "MainActivity", "OpenGLES 3.0 not supported");
             return;

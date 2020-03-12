@@ -9,6 +9,7 @@ public class SingleBlock extends Block {
     public SingleBlock(int x, int y, Global.BLOCK_COLOR color) {
         super(x, y, color);
         super.textureMapX = 0;
+        super.model = Global.MODEL.getModel(color, Global.ENTITY_TYPE.SINGLE);
     }
 
 }

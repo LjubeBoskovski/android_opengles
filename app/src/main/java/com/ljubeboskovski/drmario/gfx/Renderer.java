@@ -13,18 +13,19 @@ import com.ljubeboskovski.drmario.R;
 import com.ljubeboskovski.drmario.game.entity.Pill;
 import com.ljubeboskovski.drmario.game.entity.Virus;
 import com.ljubeboskovski.drmario.game.entity.block.Block;
-import com.ljubeboskovski.drmario.gfx.model.RawModel;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
 import com.ljubeboskovski.drmario.gfx.shader.ShaderProgram;
 import com.ljubeboskovski.drmario.gfx.shader.TextureShader;
-import com.ljubeboskovski.drmario.gfx.texture.ModelTexture;
 import com.ljubeboskovski.drmario.game.Game;
 import com.ljubeboskovski.drmario.gfx.texture.TextureMap;
+
+import java.util.concurrent.locks.ReadWriteLock;
 
 
 public class Renderer implements GLSurfaceView.Renderer {
 
     private Context context;
+    private ReadWriteLock lock;
 
     private TextureShader textureShader;
     private Loader loader;
@@ -33,10 +34,9 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     private TextureMap textureMap;
 
-    private Pill pill;
-
-    public Renderer(Context context) {
+    public Renderer(Context context, ReadWriteLock lock) {
         this.context = context;
+        this.lock = lock;
     }
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -44,24 +44,34 @@ public class Renderer implements GLSurfaceView.Renderer {
 
         textureShader = new TextureShader(context);
         loader = new Loader(context);
+        game.setLoader(loader);
         camera = new Camera();
 
         textureMap = new TextureMap(8, loader.loadTexture(R.drawable.blocks_spritemap));
 
-        for (Block block : game.getWorld().getBlocks()) {
-            loader.loadToVAO(block, textureMap);
+        lock.readLock().lock();
+        try {
+            Global.MODEL.initWorldTextures(loader, textureMap);
+//            for (Block block : game.getWorld().getBlocks()) {
+//                loader.loadToVAO(block, textureMap);
+//            }
+//            for (Virus virus : game.getWorld().getViruses()) {
+//                loader.loadToVAO(virus, textureMap);
+//            }
+//            for (Pill pill : game.getWorld().getPills()) {
+//                loader.loadToVAO(pill.getBlockNorth(), textureMap);
+//                loader.loadToVAO(pill.getBlockSouth(), textureMap);
+//            }
+//            Pill pill = game.getControlledPill();
+//            if (pill != null) {
+//                loader.loadToVAO(pill.getBlockNorth(), textureMap);
+//                loader.loadToVAO(pill.getBlockSouth(), textureMap);
+//            }
+            game.createWorld();
+        } finally {
+            lock.readLock().unlock();
         }
-        for (Virus virus : game.getWorld().getViruses()){
-            loader.loadToVAO(virus, textureMap);
-        }
-        for (Pill pill : game.getWorld().getPills()){
-            loader.loadToVAO(pill.getBlockNorth(), textureMap);
-            loader.loadToVAO(pill.getBlockSouth(), textureMap);
-        }
-
-        pill = new Pill(1, 1, Global.BLOCK_COLOR.RED, Global.BLOCK_COLOR.YELLOW);
-        loader.loadToVAO(pill.getBlockNorth(), textureMap);
-        loader.loadToVAO(pill.getBlockSouth(), textureMap);
+        game.start();
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -71,15 +81,19 @@ public class Renderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
         // Redraw background color
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
-        game.update();
+        lock.writeLock().lock();
+        try{
+            game.update();
+        } finally {
+            lock.writeLock().unlock();
+        }
 
-        long time = SystemClock.uptimeMillis() % 300L;
-        float angleInDegrees = (360.0f / 300.0f) * ((int) time);
-        float scale = (float) (0.3f * Math.sin((float)time/300.0f * 2.0f * Math.PI) + 1.3f);
-
-        pill.setPosRotScale(pill.getX(), pill.getY(), 2.0f, angleInDegrees, 1.0f);
-        pill.update();
-        draw();
+        lock.readLock().lock();
+        try {
+            draw();
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
 
@@ -98,11 +112,13 @@ public class Renderer implements GLSurfaceView.Renderer {
             draw(textureShader, loader, camera, pill.getBlockSouth().getmMatrix(),
                     pill.getBlockSouth().getModel());
         }
-
-        draw(textureShader, loader, camera, pill.getBlockNorth().getmMatrix(),
-                pill.getBlockNorth().getModel());
-        draw(textureShader, loader, camera, pill.getBlockSouth().getmMatrix(),
-                pill.getBlockSouth().getModel());
+        Pill pill = game.getControlledPill();
+        if(pill != null) {
+            draw(textureShader, loader, camera, pill.getBlockNorth().getmMatrix(),
+                    pill.getBlockNorth().getModel());
+            draw(textureShader, loader, camera, pill.getBlockSouth().getmMatrix(),
+                    pill.getBlockSouth().getModel());
+        }
 
         textureShader.stop();
     }
@@ -135,14 +151,6 @@ public class Renderer implements GLSurfaceView.Renderer {
         GLES30.glEnable(GLES30.GL_BLEND);
         GLES30.glBlendFunc(GLES30.GL_SRC_ALPHA, GLES30.GL_ONE_MINUS_SRC_ALPHA);
 
-
-//        GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
-//
-//        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureDataHandle);
-//        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
-//
-//        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureDataHandle);
-//        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MIN_FILTER, GLES30.GL_LINEAR_MIPMAP_LINEAR);
     }
 
     public void setGame(Game game) {

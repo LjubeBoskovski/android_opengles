@@ -1,18 +1,24 @@
 package com.ljubeboskovski.drmario.game;
 
 import com.ljubeboskovski.drmario.Global;
+import com.ljubeboskovski.drmario.game.entity.Entity;
 import com.ljubeboskovski.drmario.game.entity.Pill;
 import com.ljubeboskovski.drmario.game.entity.Virus;
 import com.ljubeboskovski.drmario.game.entity.block.Block;
 import com.ljubeboskovski.drmario.game.world.World;
+import com.ljubeboskovski.drmario.gfx.Loader;
 
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.locks.ReadWriteLock;
 
 public class Game {
 
     public static Random random;
+
+    private Loader loader;
+    private ReadWriteLock lock;
     private Timer timer;
     private int tickCounter = -1;
     private float fallingFrequency = 1.0f;
@@ -22,14 +28,16 @@ public class Game {
     private Block selectedBlock = null;
     private Pill controlledPill = null;
 
-    public Game() {
+    public Game(ReadWriteLock lock) {
+        this.lock = lock;
         this.random = new Random();
-        this.world = new World(9, 16);
         this.timer = new Timer("count");
 
-        Pill startingPill = new Pill(4, 15);
-        world.addPill(startingPill);
-        controlledPill = startingPill;
+    }
+
+    public void createWorld() {
+        this.world = new World(9, 16);
+        spawnControlledPill();
     }
 
     public void start() {
@@ -42,22 +50,63 @@ public class Game {
         public void run() {
             tickCounter++;
 
-            int ticksPerFall = (int) (Global.FRAMES_PER_SECOND / fallingFrequency);
-            if (tickCounter - lastFall > ticksPerFall) {
-                fall();
-                lastFall = tickCounter;
-            }
+            lock.writeLock().lock();
+            try {
+                int ticksPerFall = (int) (Global.FRAMES_PER_SECOND / fallingFrequency);
+                if (tickCounter - lastFall > ticksPerFall) {
+                    step();
+                    lastFall = tickCounter;
+                }
 
-            for (Virus virus : world.getViruses()) {
-                virus.tick();
+                for (Virus virus : world.getViruses()) {
+                    virus.tick();
+                }
+            } finally {
+                lock.writeLock().unlock();
             }
         }
     }
 
-    private void fall() {
+    private void step() {
         if (controlledPill != null) {
+            int rotation = (int) controlledPill.getR();
+            if (rotation == 0 || rotation == 180) {
+                Entity belowPill = entityAt(controlledPill.getX(), controlledPill.getY() - 1);
+
+                if (belowPill != null) {
+                    world.addPill(controlledPill);
+                    controlledPill = null;
+                    return;
+                }
+            }
             controlledPill.moveDown();
+        } else {
+            spawnControlledPill();
         }
+    }
+
+    private void spawnControlledPill() {
+        Pill pill = new Pill(4, 15);
+        controlledPill = pill;
+    }
+
+    private Entity entityAt(float x, float y) {
+        for (Block block : world.getBlocks()) {
+            if (block.getX() == x && block.getY() == y) {
+                return block;
+            }
+        }
+        for (Pill pill : world.getPills()) {
+            if (pill.getX() == x && pill.getY() == y) {
+                return pill;
+            }
+        }
+        for (Virus virus : world.getViruses()) {
+            if (virus.getX() == x && virus.getY() == y) {
+                return virus;
+            }
+        }
+        return null;
     }
 
     public void update() {
@@ -69,6 +118,9 @@ public class Game {
         }
         for (Pill pill : world.getPills()) {
             pill.update();
+        }
+        if (controlledPill != null) {
+            controlledPill.update();
         }
     }
 
@@ -83,7 +135,7 @@ public class Game {
                     controlledPill.moveDown();
                 }
             } else {
-                if(x < 0.5) {
+                if (x < 0.5) {
                     controlledPill.rotateCounterClockwise();
                 } else {
                     controlledPill.rotateClockwise();
@@ -92,22 +144,25 @@ public class Game {
             }
         }
     }
-//        int xBlock = (int) (x % 9);
-//        int yBlock = (int) (y % 16);
-//
-//        selectedBlock = getSelectedBlock(xBlock, yBlock);
 
-            private Block getSelectedBlock ( int x, int y){
-                for (Block block : world.getBlocks()) {
-                    if (block.getX() == x && block.getY() == y) {
-                        return block;
-                    }
-                }
-                return null;
-            }
-
-
-            public World getWorld () {
-                return world;
+    private Block getSelectedBlock(int x, int y) {
+        for (Block block : world.getBlocks()) {
+            if (block.getX() == x && block.getY() == y) {
+                return block;
             }
         }
+        return null;
+    }
+
+    public Pill getControlledPill() {
+        return controlledPill;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setLoader(Loader loader) {
+        this.loader = loader;
+    }
+}
