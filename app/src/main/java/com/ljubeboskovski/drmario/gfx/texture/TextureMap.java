@@ -1,5 +1,7 @@
 package com.ljubeboskovski.drmario.gfx.texture;
 
+import com.ljubeboskovski.drmario.R;
+
 public class TextureMap {
 
     int size;
@@ -10,6 +12,11 @@ public class TextureMap {
     public TextureMap(int size, ModelTexture texture) {
         this.size = size;
         this.texture = texture;
+    }
+
+    public TextureMap(int size, int resourceID){
+        this.size = size;
+        this.texture = texture = new ModelTexture(resourceID);
     }
 
     public ModelTexture getTexture() {

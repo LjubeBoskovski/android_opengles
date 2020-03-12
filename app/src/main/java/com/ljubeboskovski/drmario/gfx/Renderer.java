@@ -45,8 +45,7 @@ public class Renderer implements GLSurfaceView.Renderer {
         loader = new Loader(context);
         camera = new Camera();
 
-        ModelTexture texture = new ModelTexture(loader.loadTexture(R.drawable.blocks_spritemap));
-        textureMap = new TextureMap(8, texture);
+        textureMap = new TextureMap(8, loader.loadTexture(R.drawable.blocks_spritemap));
 
         for (Block block : game.getWorld().getBlocks()) {
             loader.loadToVAO(block, textureMap);
@@ -117,7 +116,7 @@ public class Renderer implements GLSurfaceView.Renderer {
 
 
 //        GLES30.glGenerateMipmap(GLES30.GL_TEXTURE_2D);
-
+//
 //        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureDataHandle);
 //        GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR);
 //
