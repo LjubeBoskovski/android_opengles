@@ -3,19 +3,15 @@ package com.ljubeboskovski.drmario.game.entity.block;
 import android.opengl.Matrix;
 
 import com.ljubeboskovski.drmario.Global;
-import com.ljubeboskovski.drmario.game.entity.Entity;
+import com.ljubeboskovski.drmario.game.entity.TexturedEntity;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
 
-public abstract class Block extends Entity {
+public abstract class Block extends TexturedEntity {
 
     private int worldX, worldY;
     private boolean isFloating;
     private Global.BLOCK_COLOR color;
     private float[] colorVector;
-
-    protected int textureMapX = -1;
-    protected int textureMapY = -1;
-    private TexturedModel model;
 
     Block(int x, int y, Global.BLOCK_COLOR color) {
         super(x, y);
@@ -50,25 +46,7 @@ public abstract class Block extends Entity {
         Matrix.scaleM(mMatrix, 0, s, s, 0);
         Matrix.rotateM(mMatrix, 0, r, 0.0f, 0.0f, 1.0f);
     }
-
-    public TexturedModel getModel() {
-        return model;
-    }
-
     public float[] getColorVector() {
         return colorVector;
     }
-
-    public int getTextureMapX() {
-        return textureMapX;
-    }
-
-    public int getTextureMapY() {
-        return textureMapY;
-    }
-
-    public void setModel(TexturedModel model) {
-        this.model = model;
-    }
-
 }
