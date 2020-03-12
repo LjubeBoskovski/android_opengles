@@ -77,6 +77,7 @@ public class World {
     }
 
     public void addPill(Pill pill) {
-        pills.add(pill);
+        blocks.add(pill.getBlockNorth());
+        blocks.add(pill.getBlockSouth());
     }
 }

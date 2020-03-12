@@ -21,7 +21,7 @@ public class Game {
     private ReadWriteLock lock;
     private Timer timer;
     private int tickCounter = -1;
-    private float fallingFrequency = 1.0f;
+    private float stepFrequency = 1.0f;
     private int lastFall = 0;
 
     private World world;
@@ -52,8 +52,8 @@ public class Game {
 
             lock.writeLock().lock();
             try {
-                int ticksPerFall = (int) (Global.FRAMES_PER_SECOND / fallingFrequency);
-                if (tickCounter - lastFall > ticksPerFall) {
+                int ticksPerStep = (int) (Global.FRAMES_PER_SECOND / stepFrequency);
+                if (tickCounter - lastFall > ticksPerStep) {
                     step();
                     lastFall = tickCounter;
                 }
@@ -69,19 +69,48 @@ public class Game {
 
     private void step() {
         if (controlledPill != null) {
-            int rotation = (int) controlledPill.getR();
-            if (rotation == 0 || rotation == 180) {
-                Entity belowPill = entityAt(controlledPill.getX(), controlledPill.getY() - 1);
 
+            // The pill has reached the ground
+            if (controlledPill.getY() == 0) {
+                return;
+            }
+
+            int rotation = (int) controlledPill.getR();
+            Entity belowPill = entityAt(controlledPill.getX(), controlledPill.getY() - 1);
+
+            // The pill is falling vertically
+            if (rotation == 0 || rotation == 180) {
+
+                // There is an entity below the pill
                 if (belowPill != null) {
-                    world.addPill(controlledPill);
-                    controlledPill = null;
+                    land();
+                    return;
+                }
+            } else {    // The pill is falling horizontally
+                Entity belowRightPill = entityAt(controlledPill.getX() + 1,
+                        controlledPill.getY() - 1);
+
+                // There is an entity directly below or below the right half of the pill
+                if (belowPill != null | belowRightPill != null) {
+                    land();
                     return;
                 }
             }
+
+            // If none of the above cases happen, then the pill falls down
             controlledPill.moveDown();
         } else {
             spawnControlledPill();
+        }
+    }
+
+    private void land() {
+        lock.writeLock().lock();
+        try {
+            world.addPill(controlledPill);
+            controlledPill = null;
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
@@ -132,7 +161,7 @@ public class Game {
                 } else if (x > 0.6) {
                     controlledPill.moveRight();
                 } else {
-                    controlledPill.moveDown();
+                    step();
                 }
             } else {
                 if (x < 0.5) {
