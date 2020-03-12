@@ -72,6 +72,7 @@ public class Game {
 
             // The pill has reached the ground
             if (controlledPill.getY() == 0) {
+                land();
                 return;
             }
 
@@ -114,6 +115,101 @@ public class Game {
         }
     }
 
+
+    public void controlLeft() {
+        if (controlledPill != null) {
+            int rotation = (int) controlledPill.getR();
+            Entity leftOfPill = entityAt(controlledPill.getX() - 1, controlledPill.getY());
+
+            // The pill is positioned vertically
+            if (rotation == 0 || rotation == 180) {
+                Entity leftUpOfPill = entityAt(controlledPill.getX() - 1,
+                        controlledPill.getY() + 1);
+                // There is space to move
+                if (leftOfPill == null && leftUpOfPill == null && controlledPill.getX() > 0) {
+                    controlledPill.moveLeft();
+                    return;
+                }
+            } else {    // The pill is positioned horizontally
+                if (leftOfPill == null && controlledPill.getX() > 0) {
+                    controlledPill.moveLeft();
+                    return;
+                }
+            }
+        }
+    }
+
+    public void controlright() {
+        if (controlledPill != null) {
+            int rotation = (int) controlledPill.getR();
+            Entity rightOfPill = entityAt(controlledPill.getX() + 1, controlledPill.getY());
+
+            // The pill is positioned vertically
+            if (rotation == 0 || rotation == 180) {
+                Entity rightUpOfPill = entityAt(controlledPill.getX() + 1,
+                        controlledPill.getY() + 1);
+                // There is space to move
+                if (rightOfPill == null && rightUpOfPill == null && controlledPill.getX() < world.getSizeX() - 1) {
+                    controlledPill.moveRight();
+                    return;
+                }
+            } else {    // The pill is positioned horizontally
+                if (rightOfPill == null && controlledPill.getX() < world.getSizeX() - 2) {
+                    controlledPill.moveRight();
+                    return;
+                }
+            }
+        }
+    }
+
+    public void controlDown() {
+        step();
+    }
+
+    public void controlClockwise() {
+        if (controlledPill != null) {
+            int rotation = (int) controlledPill.getR();
+
+            // The pill is positioned vertically
+            if (rotation == 0 || rotation == 180) {
+                Entity rightOfPill = entityAt(controlledPill.getX() + 1, controlledPill.getY());
+                // There is space to move
+                if (rightOfPill == null && controlledPill.getX() < world.getSizeX() - 1) {
+                    controlledPill.rotateClockwise();
+                    return;
+                }
+            } else {    // The pill is positioned horizontally
+                Entity upOfPill = entityAt(controlledPill.getX(), controlledPill.getY() + 1);
+                if (upOfPill == null) {
+                    controlledPill.rotateClockwise();
+                    return;
+                }
+            }
+        }
+    }
+
+    public void controlCounterClockwise() {
+        if (controlledPill != null) {
+            int rotation = (int) controlledPill.getR();
+
+            // The pill is positioned vertically
+            if (rotation == 0 || rotation == 180) {
+                Entity rightOfPill = entityAt(controlledPill.getX() + 1, controlledPill.getY());
+                // There is space to move
+                if (rightOfPill == null && controlledPill.getX() < world.getSizeX() - 1) {
+                    controlledPill.rotateClockwise();
+                    return;
+                }
+            } else {    // The pill is positioned horizontally
+                Entity upOfPill = entityAt(controlledPill.getX(), controlledPill.getY() + 1);
+                if (upOfPill == null) {
+                    controlledPill.rotateClockwise();
+                    return;
+                }
+            }
+        }
+    }
+
     private void spawnControlledPill() {
         Pill pill = new Pill(4, 15);
         controlledPill = pill;
@@ -125,14 +221,33 @@ public class Game {
                 return block;
             }
         }
-        for (Pill pill : world.getPills()) {
-            if (pill.getX() == x && pill.getY() == y) {
-                return pill;
-            }
-        }
         for (Virus virus : world.getViruses()) {
             if (virus.getX() == x && virus.getY() == y) {
                 return virus;
+            }
+        }
+        for (Pill pill : world.getPills()) {
+            int rotation = (int) pill.getR();
+            // The pill is positioned vertically
+            if (rotation == 0 || rotation == 180) {
+                // Lower DoubleBlock
+                if (pill.getX() == x && pill.getY() == y) {
+                    return pill;
+                }
+
+                // Upper DoubleBlock
+                if (pill.getX() == x && pill.getY() + 1 == y) {
+                    return pill;
+                }
+            } else {    // The pill is positioned horizontally
+                // Left DoubleBlock
+                if (pill.getX() == x && pill.getY() == y) {
+                    return pill;
+                }
+                // Right DoubleBlock
+                if (pill.getX() + 1 == x && pill.getY() == y) {
+                    return pill;
+                }
             }
         }
         return null;
@@ -150,27 +265,6 @@ public class Game {
         }
         if (controlledPill != null) {
             controlledPill.update();
-        }
-    }
-
-    public void touch(float x, float y) {
-        if (controlledPill != null) {
-            if (y > 0.5) {
-                if (x < 0.4) {
-                    controlledPill.moveLeft();
-                } else if (x > 0.6) {
-                    controlledPill.moveRight();
-                } else {
-                    step();
-                }
-            } else {
-                if (x < 0.5) {
-                    controlledPill.rotateCounterClockwise();
-                } else {
-                    controlledPill.rotateClockwise();
-                }
-
-            }
         }
     }
 

@@ -46,6 +46,21 @@ public class InputHandler {
 //        float xOnWorld = x * (float)game.getWorld().getSizeX();
 //        float yOnWorld = -1.0f * y * (float)game.getWorld().getSizeY() + (float)game.getWorld().getSizeY();
 
-        game.touch(x, y);
+        if (y > 0.5) {
+            if (x < 0.4) {
+                game.controlLeft();
+            } else if (x > 0.6) {
+                game.controlright();
+            } else {
+                game.controlDown();
+            }
+        } else {
+            if (x < 0.5) {
+                game.controlCounterClockwise();
+            } else {
+                game.controlCounterClockwise();
+            }
+
+        }
     }
 }
