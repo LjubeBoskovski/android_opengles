@@ -59,7 +59,7 @@ public class Renderer implements GLSurfaceView.Renderer {
             loader.loadToVAO(pill.getBlockSouth(), textureMap);
         }
 
-        pill = new Pill(0, 0, Global.BLOCK_COLOR.RED, Global.BLOCK_COLOR.YELLOW);
+        pill = new Pill(1, 1, Global.BLOCK_COLOR.RED, Global.BLOCK_COLOR.YELLOW);
         loader.loadToVAO(pill.getBlockNorth(), textureMap);
         loader.loadToVAO(pill.getBlockSouth(), textureMap);
     }
@@ -73,11 +73,11 @@ public class Renderer implements GLSurfaceView.Renderer {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
         game.update();
 
-        long time = SystemClock.uptimeMillis() % 1000L;
-        float angleInDegrees = (360.0f / 1000.0f) * ((int) time);
-        float scale = (float) (0.3f * Math.sin((float)time/1000.0f * 2.0f * Math.PI) + 1.3f);
+        long time = SystemClock.uptimeMillis() % 300L;
+        float angleInDegrees = (360.0f / 300.0f) * ((int) time);
+        float scale = (float) (0.3f * Math.sin((float)time/300.0f * 2.0f * Math.PI) + 1.3f);
 
-        pill.setPosRotScale(pill.getX(), pill.getY(), 2.0f, angleInDegrees, scale);
+        pill.setPosRotScale(pill.getX(), pill.getY(), 2.0f, angleInDegrees, 1.0f);
         pill.update();
         draw();
     }

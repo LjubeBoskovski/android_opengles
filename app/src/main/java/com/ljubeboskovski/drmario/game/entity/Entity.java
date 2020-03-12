@@ -55,11 +55,13 @@ public abstract class Entity {
     }
 
     public void rotateClockwise() {
-        r -= 90;
+        r += 270;
+        r = r % 360;
     }
 
     public void rotateCounterClockwise() {
         r += 90;
+        r = r % 360;
     }
 
     public float getX() {

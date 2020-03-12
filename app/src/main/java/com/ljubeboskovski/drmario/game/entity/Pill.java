@@ -15,7 +15,7 @@ public class Pill extends Entity {
 
     public Pill(int x, int y, Global.BLOCK_COLOR colorNorth, Global.BLOCK_COLOR colorSouth) {
         this.blockNorth = new DoubleBlock(x, y, colorNorth);
-        this.blockSouth = new DoubleBlock(x, y-1, colorSouth);
+        this.blockSouth = new DoubleBlock(x, y - 1, colorSouth);
         this.x = x;
         this.y = y;
         this.r = 0.0f;
@@ -29,12 +29,37 @@ public class Pill extends Entity {
     }
 
     @Override
-    public void update(){
+    public void update() {
 //        z = isFloating ? s + 1.0f : 1.0f;
-        float xd = (float)Math.sin(Math.toRadians(r)) * 0.5f;
-        float yd = (float)Math.cos(Math.toRadians(r)) * 0.5f;
-        blockNorth.setPosRotScale(x + xd * s, y + yd * s + 0.5f, z, -r - 90, s);
-        blockSouth.setPosRotScale(x - xd * s, y - yd * s + 0.5f, z, -r + 90, s);
+        if (0 <= r && r < 90) {
+            float xd = (float) Math.sin(Math.toRadians(r));
+            float yd = (float) Math.cos(Math.toRadians(r));
+
+            blockNorth.setPosRotScale(x + xd * s, y + yd * s, z, -r - 90, s);
+            blockSouth.setPosRotScale(x, y, z, -r + 90, s);
+        }
+        if (180 <= r && r < 270) {
+            float xd = (float) Math.sin(Math.toRadians(r + 180));
+            float yd = (float) Math.cos(Math.toRadians(r + 180));
+
+            blockSouth.setPosRotScale(x + xd * s, y + yd * s, z, -r + 90, s);
+            blockNorth.setPosRotScale(x, y, z, -r - 90, s);
+        }
+        if(90 <= r && r < 180) {
+            float alpha = 180 - r;
+            float opposite = (float) Math.sin(Math.toRadians(alpha));
+            float adjacent = (float) Math.cos(Math.toRadians(alpha));
+            blockSouth.setPosRotScale(x, y + adjacent * s, z, -r + 90, s);
+            blockNorth.setPosRotScale(x + opposite * s, y, z, -r - 90, s);
+        }
+        if(270 <= r && r < 360) {
+            float alpha = - r;
+            float opposite = (float) Math.sin(Math.toRadians(alpha));
+            float adjacent = (float) Math.cos(Math.toRadians(alpha));
+            blockNorth.setPosRotScale(x, y + adjacent * s, z, -r - 90, s);
+            blockSouth.setPosRotScale(x + opposite * s, y, z, -r + 90, s);
+        }
+
         blockNorth.update();
         blockSouth.update();
     }
