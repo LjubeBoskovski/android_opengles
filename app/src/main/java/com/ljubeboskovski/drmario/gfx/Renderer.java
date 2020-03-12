@@ -69,7 +69,8 @@ public class Renderer implements GLSurfaceView.Renderer {
         float angleInDegrees = (360.0f / 1000.0f) * ((int) time);
         float scale = (float) (0.3f * Math.sin((float)time/1000.0f * 2.0f * Math.PI) + 1.3f);
 
-        pill.update(pill.getX(), pill.getY(), 2.0f, angleInDegrees, scale);
+        pill.setPosRotScale(pill.getX(), pill.getY(), 2.0f, angleInDegrees, scale);
+        pill.update();
         draw();
     }
 

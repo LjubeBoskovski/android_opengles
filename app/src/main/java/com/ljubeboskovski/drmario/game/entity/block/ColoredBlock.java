@@ -9,36 +9,20 @@ import com.ljubeboskovski.drmario.gfx.model.RawModel;
 
 public class ColoredBlock extends Entity {
 
-    private float x;
-    private float y;
     private float[] color;
-
     private RawModel model;
-    public float[] mMatrix = new float[16];
 
     public ColoredBlock(int x, int y, float[] color) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
         this.color = color;
-        update(0.0f);
-    }
-
-    public void update(float scale){
-        Matrix.setIdentityM(mMatrix, 0);
-        Matrix.translateM(mMatrix, 0, x + 0.5f, y + 0.5f, scale);
-        Matrix.scaleM(mMatrix, 0, scale, scale, 0);
-        Matrix.rotateM(mMatrix, 0, 0f, 0.0f, 0.0f, 1.0f);
     }
 
     public RawModel getModel() {
         return model;
     }
 
-    public float[] getmMatrix() {
-        return mMatrix;
-    }
-
     public float[] getVertices() {
+        //TODO: add loadToVAO function in loader for this
         float[] coordinates = QuadForm.coordinates;
 
         int verticesSize =
@@ -63,13 +47,5 @@ public class ColoredBlock extends Entity {
 
     public void setModel(RawModel model) {
         this.model = model;
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
     }
 }

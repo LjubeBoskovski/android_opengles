@@ -7,7 +7,6 @@ public class Pill extends Entity {
 
 
     int worldX, worldY, worldR;
-    float x, y, z, r, s;
     boolean isFloating;
 
 
@@ -30,19 +29,17 @@ public class Pill extends Entity {
 
     @Override
     public void update(){
-        if(isFloating) {
-            z = s + 1.0f;
-            update(x, y, z, r, s);
-        } else {
-            z = 1.0f;
-            update(worldX, worldY, z, worldR * 90, 1.0f);
-        }
     }
-    public void update(float x, float y, float z, float r, float s) {
+
+    @Override
+    public void setPosRotScale(float x, float y, float z, float r, float s) {
+        z = isFloating ? s + 1.0f : 1.0f;
         float xd = (float)Math.sin(Math.toRadians(r)) * 0.5f;
         float yd = (float)Math.cos(Math.toRadians(r)) * 0.5f;
-        blockNorth.update(x + xd * s, y + yd * s, z, -r - 90, s);
-        blockSouth.update(x - xd * s, y - yd * s, z, -r + 90, s);
+        blockNorth.setPosRotScale(x + xd * s, y + yd * s, z, -r - 90, s);
+        blockSouth.setPosRotScale(x - xd * s, y - yd * s, z, -r + 90, s);
+        blockNorth.update();
+        blockSouth.update();
     }
 
     public int getWorldX() {
@@ -53,25 +50,6 @@ public class Pill extends Entity {
         return worldY;
     }
 
-    public float getX() {
-        return x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public float getZ() {
-        return z;
-    }
-
-    public float getR() {
-        return r;
-    }
-
-    public float getS() {
-        return s;
-    }
 
     public boolean isFloating() {
         return isFloating;
@@ -91,26 +69,6 @@ public class Pill extends Entity {
 
     public void setWorldY(int worldY) {
         this.worldY = worldY;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public void setZ(float z) {
-        this.z = z;
-    }
-
-    public void setR(float r) {
-        this.r = r;
-    }
-
-    public void setS(float s) {
-        this.s = s;
     }
 
     public void setFloating(boolean floating) {

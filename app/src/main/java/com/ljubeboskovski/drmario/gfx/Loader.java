@@ -141,7 +141,7 @@ public class Loader {
 //        }
 //    }
 
-    private static FloatBuffer storeDataInFloatBuffer(float[] vertices) {
+    private FloatBuffer storeDataInFloatBuffer(float[] vertices) {
         FloatBuffer vertexBuffer;
 
         // initialize vertex byte buffer for shape coordinates
@@ -161,7 +161,7 @@ public class Loader {
         return vertexBuffer;
     }
 
-    private static ShortBuffer storeDataInShortBuffer(short[] indices) {
+    private ShortBuffer storeDataInShortBuffer(short[] indices) {
         ShortBuffer indexBuffer;
 
         ByteBuffer bb = ByteBuffer.allocateDirect(indices.length * Global.BYTES_PER_SHORT);
@@ -171,5 +171,9 @@ public class Loader {
         indexBuffer.position(0);
         return indexBuffer;
     }
+
+//    public static float[] getVertices(int numOfVertices, float[][] arrays) {
+//
+//    }
 
 }
