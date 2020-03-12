@@ -25,7 +25,7 @@ public abstract class Entity {
 
     public void update() {
         Matrix.setIdentityM(mMatrix, 0);
-        Matrix.translateM(mMatrix, 0, x, y, z);
+        Matrix.translateM(mMatrix, 0, x + 0.5f, y + 0.5f, z);
         Matrix.scaleM(mMatrix, 0, s, s, 0);
         Matrix.rotateM(mMatrix, 0, r, 0.0f, 0.0f, 1.0f);
     }

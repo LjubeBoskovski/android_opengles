@@ -34,7 +34,6 @@ public class Renderer implements GLSurfaceView.Renderer {
     private TextureMap textureMap;
 
     private Pill pill;
-    private Virus virus;
 
     public Renderer(Context context) {
         this.context = context;
@@ -52,14 +51,13 @@ public class Renderer implements GLSurfaceView.Renderer {
         for (Block block : game.getWorld().getBlocks()) {
             loader.loadToVAO(block, textureMap);
         }
+        for (Virus virus : game.getWorld().getViruses()){
+            loader.loadToVAO(virus, textureMap);
+        }
 
-        pill = new Pill(3, 3, Global.BLOCK_COLOR.RED, Global.BLOCK_COLOR.YELLOW);
+        pill = new Pill(0, 0, Global.BLOCK_COLOR.RED, Global.BLOCK_COLOR.YELLOW);
         loader.loadToVAO(pill.getBlockNorth(), textureMap);
         loader.loadToVAO(pill.getBlockSouth(), textureMap);
-
-        virus = new Virus(4, 8, Global.BLOCK_COLOR.YELLOW);
-        loader.loadToVAO(virus, textureMap);
-        game.getWorld().addVirus(virus);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -77,22 +75,25 @@ public class Renderer implements GLSurfaceView.Renderer {
 
         pill.setPosRotScale(pill.getX(), pill.getY(), 2.0f, angleInDegrees, scale);
         pill.update();
-        virus.update();
         draw();
     }
 
 
     private void draw() {
         textureShader.start();
-//        for(Block block : game.getWorld().getBlocks()) {
-//            draw(textureShader, loader, camera, block.getmMatrix(), block.getModel());
-//        }
+
+        for(Block block : game.getWorld().getBlocks()) {
+            draw(textureShader, loader, camera, block.getmMatrix(), block.getModel());
+        }
+        for(Virus virus : game.getWorld().getViruses()) {
+            draw(textureShader, loader, camera, virus.getmMatrix(), virus.getModel());
+        }
+
         draw(textureShader, loader, camera, pill.getBlockNorth().getmMatrix(),
                 pill.getBlockNorth().getModel());
         draw(textureShader, loader, camera, pill.getBlockSouth().getmMatrix(),
                 pill.getBlockSouth().getModel());
 
-        draw(textureShader, loader, camera, virus.getmMatrix(), virus.getModel());
         textureShader.stop();
     }
 

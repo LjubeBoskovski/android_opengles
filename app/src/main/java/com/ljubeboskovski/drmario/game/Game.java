@@ -13,11 +13,11 @@ import java.util.TimerTask;
 public class Game {
 
     public static Random random;
+    private Timer timer;
+    private int tickCounter = -1;
 
     private World world;
     private Block selectedBlock = null;
-    private Timer timer;
-    private int tickCounter = -1;
 
     public Game() {
         this.random = new Random();
@@ -41,17 +41,11 @@ public class Game {
     }
 
     public void update() {
-        float scale =
-                0.8f * (float) Math.sin(((float) tickCounter / Global.FRAMES_PER_SECOND) * 2f * (float) Math.PI) + 1.8f;
         for (Block block : world.getBlocks()) {
-            if (block == selectedBlock) {
-                block.setS(scale);
-                block.setZ(1.5f);
-            } else {
-                block.setS(1.0f);
-                block.setZ(1.0f);
-            }
             block.update();
+        }
+        for(Virus virus : world.getViruses()){
+            virus.update();
         }
     }
 
@@ -75,9 +69,4 @@ public class Game {
     public World getWorld() {
         return world;
     }
-
-    public Block getSelectedBlock() {
-        return selectedBlock;
-    }
-
 }
