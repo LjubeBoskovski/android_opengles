@@ -17,5 +17,9 @@ public class Virus extends AnimatedEntity {
         numberOfAnimations = 2;
         frequency = 2.0f;
     }
+
+    public Global.BLOCK_COLOR getColor() {
+        return color;
+    }
 }
 

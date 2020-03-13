@@ -54,7 +54,7 @@ public class Global {
         }
 
         public final static BLOCK_COLOR getRandomColor() {
-            int i = Game.random.nextInt(4);
+            int i = Game.random.nextInt(3);
             return getColorFromInt(i);
         }
     }

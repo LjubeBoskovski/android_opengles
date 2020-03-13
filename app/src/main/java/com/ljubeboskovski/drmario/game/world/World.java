@@ -2,9 +2,11 @@ package com.ljubeboskovski.drmario.game.world;
 
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.Game;
+import com.ljubeboskovski.drmario.game.entity.Entity;
 import com.ljubeboskovski.drmario.game.entity.Pill;
 import com.ljubeboskovski.drmario.game.entity.Virus;
 import com.ljubeboskovski.drmario.game.entity.block.Block;
+import com.ljubeboskovski.drmario.game.entity.block.DoubleBlock;
 import com.ljubeboskovski.drmario.game.entity.block.SingleBlock;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ public class World {
 
     private ArrayList<Virus> viruses = new ArrayList<Virus>();
     private ArrayList<Pill> pills = new ArrayList<Pill>();
-    private ArrayList<Block> blocks = new ArrayList<Block>();
+    private ArrayList<SingleBlock> singleBlocks = new ArrayList<SingleBlock>();
 
     public World(int sizeX, int sizeY) {
         this.sizeX = sizeX;
@@ -26,29 +28,163 @@ public class World {
     }
 
     private void generateBlocks() {
-        for(int i = 0; i < numberOfViruses; i++){
+        for (int i = 0; i < numberOfViruses; i++) {
             int x = Game.random.nextInt(sizeX);
             int y = Game.random.nextInt(sizeY - 5);
-            int colorInt = Game.random.nextInt(4);
-            Global.BLOCK_COLOR color;
-
-            switch(colorInt) {
-                case 0:
-                    color = Global.BLOCK_COLOR.RED;
-                    break;
-                case 1:
-                    color = Global.BLOCK_COLOR.YELLOW;
-                    break;
-                case 2:
-                    color = Global.BLOCK_COLOR.BLUE;
-                    break;
-                default:
-                    color = Global.BLOCK_COLOR.GREEN;
-                    break;
-            }
+            Global.BLOCK_COLOR color = Global.BlockColor.getRandomColor();
             Virus virus = new Virus(x, y, color);
             addVirus(virus);
         }
+    }
+
+    public boolean clearRowsColumns() {
+        Global.BLOCK_COLOR[][] field = getField();
+
+        ArrayList<Entity> toBeRemoved = new ArrayList<Entity>();
+        ArrayList<Entity> currentEntities = new ArrayList<Entity>();
+        int sameInARow = 1;
+        Global.BLOCK_COLOR currentColor = null;
+
+        // Scan the rows first
+        for (int y = 0; y < sizeY; y++) {
+            for (int x = 0; x < sizeX; x++) {
+                // There is a row of more than 4 entities with the same color
+                if (field[y][x] != currentColor) {
+                    if (sameInARow >= 4 && currentColor != null) {
+                        toBeRemoved.addAll(currentEntities);
+                    }
+                    currentEntities.clear();
+                    currentEntities.add(entityAt(x, y));
+                    sameInARow = 1;
+                    currentColor = field[y][x];
+                } else if (field[y][x] == currentColor) {
+                    if (currentColor != null) {
+                        currentEntities.add(entityAt(x, y));
+                        sameInARow++;
+                    }
+                }
+            }
+            if (sameInARow >= 4 && currentColor != null) {
+                toBeRemoved.addAll(currentEntities);
+            }
+            currentEntities.clear();
+            sameInARow = 1;
+            currentColor = null;
+        }
+
+        // Scan the columns second
+
+        for (int x = 0; x < sizeX; x++) {
+            for (int y = 0; y < sizeY; y++) {
+                // There is a row of more than 4 entities with the same color
+                if (field[y][x] != currentColor) {
+                    if (sameInARow >= 4 && currentColor != null) {
+                        toBeRemoved.addAll(currentEntities);
+                    }
+                    currentEntities.clear();
+                    currentEntities.add(entityAt(x, y));
+                    sameInARow = 1;
+                    currentColor = field[y][x];
+                } else if (field[y][x] == currentColor) {
+                    if (currentColor != null) {
+                        currentEntities.add(entityAt(x, y));
+                        sameInARow++;
+                    }
+                }
+            }
+            if (sameInARow >= 4 && currentColor != null) {
+                toBeRemoved.addAll(currentEntities);
+            }
+            currentEntities.clear();
+            sameInARow = 1;
+            currentColor = null;
+        }
+        for (Entity entity : toBeRemoved) {
+            if (entity instanceof Virus) {
+                viruses.remove(entity);
+            }
+            if (entity instanceof SingleBlock) {
+                singleBlocks.remove(entity);
+            }
+            ArrayList<Pill> pillsToBeRemoved = new ArrayList<Pill>();
+            if (entity instanceof DoubleBlock) {
+                for (Pill pill : pills) {
+                    if (pill.getBlockNorth() == entity) {
+                        DoubleBlock block = pill.getBlockSouth();
+                        SingleBlock newBlock = new SingleBlock((int) block.getX(),
+                                (int) block.getY(), block.getColor());
+                        singleBlocks.add(newBlock);
+                        pillsToBeRemoved.add(pill);
+                    }
+                    if (pill.getBlockSouth() == entity) {
+                        DoubleBlock block = pill.getBlockNorth();
+                        SingleBlock newBlock = new SingleBlock((int) block.getX(),
+                                (int) block.getY(), block.getColor());
+                        singleBlocks.add(newBlock);
+                        pillsToBeRemoved.add(pill);
+                    }
+                }
+                for (Pill pill : pillsToBeRemoved) {
+                    pills.remove(pill);
+                }
+            }
+        }
+
+        return !toBeRemoved.isEmpty();
+    }
+
+    private Global.BLOCK_COLOR[][] getField() {
+        Global.BLOCK_COLOR[][] field = new Global.BLOCK_COLOR[sizeY][sizeX];
+        for (Virus virus : viruses) {
+            field[(int) virus.getY()][(int) virus.getX()] = virus.getColor();
+        }
+        for (Pill pill : pills) {
+            DoubleBlock block0 = pill.getBlockNorth();
+            DoubleBlock block1 = pill.getBlockSouth();
+            field[(int) block0.getY()][(int) block0.getX()] = block0.getColor();
+            field[(int) block1.getY()][(int) block1.getX()] = block1.getColor();
+        }
+        for (Block block : singleBlocks) {
+            field[(int) block.getY()][(int) block.getX()] = block.getColor();
+        }
+        return field;
+    }
+
+    public Entity entityAt(float x, float y) {
+        for (Block block : singleBlocks) {
+            if (block.getX() == x && block.getY() == y) {
+                return block;
+            }
+        }
+        for (Virus virus : viruses) {
+            if (virus.getX() == x && virus.getY() == y) {
+                return virus;
+            }
+        }
+        for (Pill pill : pills) {
+            int rotation = (int) pill.getR();
+            // The pill is positioned vertically
+            if (rotation == 0 || rotation == 180) {
+                // Lower DoubleBlock
+                if (pill.getX() == x && pill.getY() == y) {
+                    return rotation == 0 ? pill.getBlockSouth() : pill.getBlockNorth();
+                }
+                // Upper DoubleBlock
+                if (pill.getX() == x && pill.getY() + 1 == y) {
+                    return rotation == 0 ? pill.getBlockNorth() : pill.getBlockSouth();
+                }
+            } else {    // The pill is positioned horizontally
+                // Left DoubleBlock
+                if (pill.getX() == x && pill.getY() == y) {
+                    return rotation == 90 ? pill.getBlockSouth() : pill.getBlockNorth();
+                }
+                // Right DoubleBlock
+                if (pill.getX() + 1 == x && pill.getY() == y) {
+                    return rotation == 90 ? pill.getBlockNorth() : pill.getBlockSouth();
+                }
+            }
+        }
+        return null;
     }
 
     public int getSizeX() {
@@ -59,8 +195,8 @@ public class World {
         return sizeY;
     }
 
-    public ArrayList<Block> getBlocks() {
-        return blocks;
+    public ArrayList<SingleBlock> getSingleBlocks() {
+        return singleBlocks;
     }
 
     public ArrayList<Virus> getViruses() {
@@ -73,7 +209,6 @@ public class World {
 
     public void addVirus(Virus virus) {
         viruses.add(virus);
-
     }
 
     public void addPill(Pill pill) {

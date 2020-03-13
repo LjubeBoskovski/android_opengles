@@ -1,6 +1,5 @@
 package com.ljubeboskovski.drmario.input;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.ljubeboskovski.drmario.game.Game;
@@ -50,7 +49,7 @@ public class InputHandler {
             if (x < 0.4) {
                 game.controlLeft();
             } else if (x > 0.6) {
-                game.controlright();
+                game.controlRight();
             } else {
                 game.controlDown();
             }

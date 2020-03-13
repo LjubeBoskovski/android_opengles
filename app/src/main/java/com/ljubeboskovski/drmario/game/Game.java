@@ -68,40 +68,49 @@ public class Game {
     }
 
     private void step() {
-        if (controlledPill != null) {
+        lock.writeLock().lock();
+        boolean isClearing;
+        try{
+            isClearing = world.clearRowsColumns();
+        } finally {
+            lock.writeLock().unlock();
+        }
+        if(!isClearing) {
+            if (controlledPill != null) {
 
-            // The pill has reached the ground
-            if (controlledPill.getY() == 0) {
-                land();
-                return;
-            }
-
-            int rotation = (int) controlledPill.getR();
-            Entity belowPill = entityAt(controlledPill.getX(), controlledPill.getY() - 1);
-
-            // The pill is falling vertically
-            if (rotation == 0 || rotation == 180) {
-
-                // There is an entity below the pill
-                if (belowPill != null) {
+                // The pill has reached the ground
+                if (controlledPill.getY() == 0) {
                     land();
                     return;
                 }
-            } else {    // The pill is falling horizontally
-                Entity belowRightPill = entityAt(controlledPill.getX() + 1,
-                        controlledPill.getY() - 1);
 
-                // There is an entity directly below or below the right half of the pill
-                if (belowPill != null | belowRightPill != null) {
-                    land();
-                    return;
+                int rotation = (int) controlledPill.getR();
+                Entity belowPill = world.entityAt(controlledPill.getX(), controlledPill.getY() - 1);
+
+                // The pill is falling vertically
+                if (rotation == 0 || rotation == 180) {
+
+                    // There is an entity below the pill
+                    if (belowPill != null) {
+                        land();
+                        return;
+                    }
+                } else {    // The pill is falling horizontally
+                    Entity belowRightPill = world.entityAt(controlledPill.getX() + 1,
+                            controlledPill.getY() - 1);
+
+                    // There is an entity directly below or below the right half of the pill
+                    if (belowPill != null | belowRightPill != null) {
+                        land();
+                        return;
+                    }
                 }
-            }
 
-            // If none of the above cases happen, then the pill falls down
-            controlledPill.moveDown();
-        } else {
-            spawnControlledPill();
+                // If none of the above cases happen, then the pill falls down
+                controlledPill.moveDown();
+            } else {
+                spawnControlledPill();
+            }
         }
     }
 
@@ -119,11 +128,11 @@ public class Game {
     public void controlLeft() {
         if (controlledPill != null) {
             int rotation = (int) controlledPill.getR();
-            Entity leftOfPill = entityAt(controlledPill.getX() - 1, controlledPill.getY());
+            Entity leftOfPill = world.entityAt(controlledPill.getX() - 1, controlledPill.getY());
 
             // The pill is positioned vertically
             if (rotation == 0 || rotation == 180) {
-                Entity leftUpOfPill = entityAt(controlledPill.getX() - 1,
+                Entity leftUpOfPill = world.entityAt(controlledPill.getX() - 1,
                         controlledPill.getY() + 1);
                 // There is space to move
                 if (leftOfPill == null && leftUpOfPill == null && controlledPill.getX() > 0) {
@@ -139,14 +148,14 @@ public class Game {
         }
     }
 
-    public void controlright() {
+    public void controlRight() {
         if (controlledPill != null) {
             int rotation = (int) controlledPill.getR();
-            Entity rightOfPill = entityAt(controlledPill.getX() + 1, controlledPill.getY());
+            Entity rightOfPill = world.entityAt(controlledPill.getX() + 1, controlledPill.getY());
 
             // The pill is positioned vertically
             if (rotation == 0 || rotation == 180) {
-                Entity rightUpOfPill = entityAt(controlledPill.getX() + 1,
+                Entity rightUpOfPill = world.entityAt(controlledPill.getX() + 1,
                         controlledPill.getY() + 1);
                 // There is space to move
                 if (rightOfPill == null && rightUpOfPill == null && controlledPill.getX() < world.getSizeX() - 1) {
@@ -154,7 +163,7 @@ public class Game {
                     return;
                 }
             } else {    // The pill is positioned horizontally
-                if (rightOfPill == null && controlledPill.getX() < world.getSizeX() - 2) {
+                if (rightOfPill == null && controlledPill.getX() + 1 < world.getSizeX() - 1) {
                     controlledPill.moveRight();
                     return;
                 }
@@ -172,14 +181,15 @@ public class Game {
 
             // The pill is positioned vertically
             if (rotation == 0 || rotation == 180) {
-                Entity rightOfPill = entityAt(controlledPill.getX() + 1, controlledPill.getY());
+                Entity rightOfPill = world.entityAt(controlledPill.getX() + 1,
+                        controlledPill.getY());
                 // There is space to move
                 if (rightOfPill == null && controlledPill.getX() < world.getSizeX() - 1) {
                     controlledPill.rotateClockwise();
                     return;
                 }
             } else {    // The pill is positioned horizontally
-                Entity upOfPill = entityAt(controlledPill.getX(), controlledPill.getY() + 1);
+                Entity upOfPill = world.entityAt(controlledPill.getX(), controlledPill.getY() + 1);
                 if (upOfPill == null) {
                     controlledPill.rotateClockwise();
                     return;
@@ -194,14 +204,15 @@ public class Game {
 
             // The pill is positioned vertically
             if (rotation == 0 || rotation == 180) {
-                Entity rightOfPill = entityAt(controlledPill.getX() + 1, controlledPill.getY());
+                Entity rightOfPill = world.entityAt(controlledPill.getX() + 1,
+                        controlledPill.getY());
                 // There is space to move
                 if (rightOfPill == null && controlledPill.getX() < world.getSizeX() - 1) {
                     controlledPill.rotateClockwise();
                     return;
                 }
             } else {    // The pill is positioned horizontally
-                Entity upOfPill = entityAt(controlledPill.getX(), controlledPill.getY() + 1);
+                Entity upOfPill = world.entityAt(controlledPill.getX(), controlledPill.getY() + 1);
                 if (upOfPill == null) {
                     controlledPill.rotateClockwise();
                     return;
@@ -215,46 +226,9 @@ public class Game {
         controlledPill = pill;
     }
 
-    private Entity entityAt(float x, float y) {
-        for (Block block : world.getBlocks()) {
-            if (block.getX() == x && block.getY() == y) {
-                return block;
-            }
-        }
-        for (Virus virus : world.getViruses()) {
-            if (virus.getX() == x && virus.getY() == y) {
-                return virus;
-            }
-        }
-        for (Pill pill : world.getPills()) {
-            int rotation = (int) pill.getR();
-            // The pill is positioned vertically
-            if (rotation == 0 || rotation == 180) {
-                // Lower DoubleBlock
-                if (pill.getX() == x && pill.getY() == y) {
-                    return pill;
-                }
-
-                // Upper DoubleBlock
-                if (pill.getX() == x && pill.getY() + 1 == y) {
-                    return pill;
-                }
-            } else {    // The pill is positioned horizontally
-                // Left DoubleBlock
-                if (pill.getX() == x && pill.getY() == y) {
-                    return pill;
-                }
-                // Right DoubleBlock
-                if (pill.getX() + 1 == x && pill.getY() == y) {
-                    return pill;
-                }
-            }
-        }
-        return null;
-    }
 
     public void update() {
-        for (Block block : world.getBlocks()) {
+        for (Block block : world.getSingleBlocks()) {
             block.update();
         }
         for (Virus virus : world.getViruses()) {
@@ -269,7 +243,7 @@ public class Game {
     }
 
     private Block getSelectedBlock(int x, int y) {
-        for (Block block : world.getBlocks()) {
+        for (Block block : world.getSingleBlocks()) {
             if (block.getX() == x && block.getY() == y) {
                 return block;
             }

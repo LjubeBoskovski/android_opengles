@@ -6,7 +6,6 @@ public class DoubleBlock extends Block {
 
     public DoubleBlock(int x, int y, Global.BLOCK_COLOR color) {
         super(x, y, color);
-        super.textureMapX = 1;
         super.model = Global.MODEL.getModel(color, Global.ENTITY_TYPE.DOUBLE);
     }
 

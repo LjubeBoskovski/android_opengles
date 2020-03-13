@@ -6,7 +6,6 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
-import android.os.SystemClock;
 
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.R;
@@ -100,7 +99,7 @@ public class Renderer implements GLSurfaceView.Renderer {
     private void draw() {
         textureShader.start();
 
-        for(Block block : game.getWorld().getBlocks()) {
+        for(Block block : game.getWorld().getSingleBlocks()) {
             draw(textureShader, loader, camera, block.getmMatrix(), block.getModel());
         }
         for(Virus virus : game.getWorld().getViruses()) {
