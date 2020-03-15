@@ -133,6 +133,35 @@ public class World {
         return !toBeRemoved.isEmpty();
     }
 
+    public boolean letBlocksFall() {
+        boolean isFalling = false;
+        for (SingleBlock block : singleBlocks) {
+            if (entityAt(block.getX(), block.getY() - 1) == null && block.getY() > 0) {
+                block.moveDown();
+                isFalling = true;
+            }
+        }
+        for (Pill pill : pills) {
+            int rotation = (int) pill.getR();
+
+            // The pill is positioned vertically
+            if (rotation == 0 || rotation == 180) {
+                if (entityAt(pill.getX(), pill.getY() - 1) == null && pill.getY() > 0) {
+                    pill.moveDown();
+                    isFalling = true;
+                }
+            } else { // The pill is positioned horizontally
+                int x = (int) pill.getX();
+                int y = (int) pill.getY();
+                if (entityAt(x, y-1) == null && entityAt(x + 1, y-1) == null && y > 0) {
+                    pill.moveDown();
+                    isFalling = true;
+                }
+            }
+        }
+        return isFalling;
+    }
+
     private Global.BLOCK_COLOR[][] getField() {
         Global.BLOCK_COLOR[][] field = new Global.BLOCK_COLOR[sizeY][sizeX];
         for (Virus virus : viruses) {
@@ -214,4 +243,5 @@ public class World {
     public void addPill(Pill pill) {
         pills.add(pill);
     }
+
 }

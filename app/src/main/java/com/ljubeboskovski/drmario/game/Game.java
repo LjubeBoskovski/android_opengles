@@ -68,14 +68,31 @@ public class Game {
     }
 
     private void step() {
+        boolean isClearing = false;
         lock.writeLock().lock();
-        boolean isClearing;
         try{
             isClearing = world.clearRowsColumns();
         } finally {
             lock.writeLock().unlock();
+            if (isClearing) {
+                return;
+            }
         }
-        if(!isClearing) {
+
+        boolean isFalling = false;
+        lock.writeLock().lock();
+        if (!isClearing) {
+            try {
+                isFalling = world.letBlocksFall();
+            } finally {
+                lock.writeLock().unlock();
+                if (isFalling) {
+                    return;
+                }
+            }
+        }
+
+        if(true) {//!isClearing) {//&& !isFalling) {
             if (controlledPill != null) {
 
                 // The pill has reached the ground
