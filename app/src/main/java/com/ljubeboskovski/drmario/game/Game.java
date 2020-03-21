@@ -71,7 +71,7 @@ public class Game {
         boolean isClearing = false;
         lock.writeLock().lock();
         try{
-            isClearing = world.clearRowsColumns();
+            isClearing = world.step();
         } finally {
             lock.writeLock().unlock();
             if (isClearing) {
@@ -79,20 +79,7 @@ public class Game {
             }
         }
 
-        boolean isFalling = false;
-        lock.writeLock().lock();
-        if (!isClearing) {
-            try {
-                isFalling = world.letBlocksFall();
-            } finally {
-                lock.writeLock().unlock();
-                if (isFalling) {
-                    return;
-                }
-            }
-        }
-
-        if(true) {//!isClearing) {//&& !isFalling) {
+        if(true) {//!isClearing) {//&& !isFalling) { //TODO
             if (controlledPill != null) {
 
                 // The pill has reached the ground
@@ -245,15 +232,7 @@ public class Game {
 
 
     public void update() {
-        for (Block block : world.getSingleBlocks()) {
-            block.update();
-        }
-        for (Virus virus : world.getViruses()) {
-            virus.update();
-        }
-        for (Pill pill : world.getPills()) {
-            pill.update();
-        }
+        world.update();
         if (controlledPill != null) {
             controlledPill.update();
         }

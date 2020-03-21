@@ -14,8 +14,8 @@ public class AnimatedEntity extends TexturedEntity {
 
     protected ArrayList<TexturedModel> models = new ArrayList<TexturedModel>();
 
-    public AnimatedEntity(float x, float y) {
-        super(x, y);
+    public AnimatedEntity(float x, float y, Global.BLOCK_COLOR color) {
+        super(x, y, color);
         counter = 0;
     }
 

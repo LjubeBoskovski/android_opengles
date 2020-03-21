@@ -7,11 +7,8 @@ import com.ljubeboskovski.drmario.game.entity.TexturedEntity;
 
 public abstract class Block extends TexturedEntity {
 
-    private Global.BLOCK_COLOR color;
-
     Block(int x, int y, Global.BLOCK_COLOR color) {
-        super(x, y);
-        this.color = color;
+        super(x, y, color);
     }
 
     @Override
@@ -22,7 +19,4 @@ public abstract class Block extends TexturedEntity {
         Matrix.rotateM(mMatrix, 0, r, 0.0f, 0.0f, 1.0f);
     }
 
-    public Global.BLOCK_COLOR getColor() {
-        return color;
-    }
 }
