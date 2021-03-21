@@ -57,7 +57,7 @@ public class InputHandler {
             if (x < 0.5) {
                 game.controlCounterClockwise();
             } else {
-                game.controlCounterClockwise();
+                game.controlClockwise();
             }
 
         }

@@ -4,9 +4,14 @@ import com.ljubeboskovski.drmario.Global;
 
 public class DoubleBlock extends Block {
 
-    public DoubleBlock(int x, int y, Global.BLOCK_COLOR color) {
-        super(x, y, color);
+    public DoubleBlock(float x, float y, float r, Global.BLOCK_COLOR color) {
+        super(x, y, r, color);
         super.model = Global.MODEL.getModel(color, Global.ENTITY_TYPE.DOUBLE);
+    }
+
+    @Override
+    public String toStringType() {
+        return "D";
     }
 
 }

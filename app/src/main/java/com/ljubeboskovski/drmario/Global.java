@@ -18,7 +18,11 @@ public class Global {
     public static final int SIZE_POSITION = 3;
     public static final int SIZE_COLOR = 4;
     public static final int SIZE_TEXTURE_COORDS = 2;
-    public static final int STRIDE = (SIZE_POSITION + SIZE_COLOR + SIZE_TEXTURE_COORDS) * BYTES_PER_FLOAT;
+//    public static final int STRIDE = (SIZE_POSITION + SIZE_COLOR + SIZE_TEXTURE_COORDS) * BYTES_PER_FLOAT;
+
+    public static final float RENDER_ELASTICITY_TRANSLATE = 0.25f;
+    public static final float RENDER_ELASTICITY_SCALE = 0.1f;
+    public static final float RENDER_ELASTICITY_ROTATE = 0.05f;
 
     public static enum BLOCK_COLOR {
         RED,

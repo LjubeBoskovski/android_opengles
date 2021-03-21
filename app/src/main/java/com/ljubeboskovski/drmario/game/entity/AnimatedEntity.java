@@ -4,6 +4,7 @@ import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AnimatedEntity extends TexturedEntity {
 
@@ -14,13 +15,37 @@ public class AnimatedEntity extends TexturedEntity {
 
     protected ArrayList<TexturedModel> models = new ArrayList<TexturedModel>();
 
-    public AnimatedEntity(float x, float y, Global.BLOCK_COLOR color) {
-        super(x, y, color);
+    public AnimatedEntity(float x, float y, float r, Global.BLOCK_COLOR color) {
+        super(x, y, r, color);
         counter = 0;
     }
 
     public void tick() {
+        super.tick();
         counter++;
+    }
+
+    @Override
+    public String toString() {
+        return "AnimatedEntity{" +
+                "numberOfAnimations=" + numberOfAnimations +
+                ", texMapCoordinates=" + Arrays.toString(texMapCoordinates) +
+                ", frequency=" + frequency +
+                ", counter=" + counter +
+                ", models=" + models +
+                ", model=" + model +
+                ", x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", r=" + r +
+                ", s=" + s +
+                ", rx=" + rx +
+                ", ry=" + ry +
+                ", rz=" + rz +
+                ", rr=" + rr +
+                ", rs=" + rs +
+                ", mMatrix=" + Arrays.toString(mMatrix) +
+                '}';
     }
 
     @Override

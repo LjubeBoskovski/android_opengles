@@ -1,5 +1,7 @@
 package com.ljubeboskovski.drmario.game.world;
 
+import android.util.Log;
+
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.Game;
 import com.ljubeboskovski.drmario.game.entity.Entity;
@@ -59,7 +61,7 @@ public class World {
         updateField();
         updated = updateCleared();
         if (!updated) {
-            updateFalling();
+            updated = updateFalling();
         }
         updateField();
         return updated;
@@ -84,6 +86,8 @@ public class World {
         for (Block block : singleBlocks) {
             field[(int) block.getY()][(int) block.getX()] = block;
         }
+
+        Log.println(Log.INFO, "World", this.toString());
     }
 
     public boolean updateCleared() {
@@ -94,8 +98,6 @@ public class World {
             }
         }
 
-//        ArrayList<Entity> toBeRemoved = new ArrayList<Entity>();
-//        ArrayList<Entity> currentEntities = new ArrayList<Entity>();
         int sameInARow = 1;
         Global.BLOCK_COLOR currentColor = null;
 
@@ -105,29 +107,23 @@ public class World {
                 // There is a row of more than 4 entities with the same color
                 if (getFieldColor(x, y) != currentColor) {
                     if (sameInARow >= 4 && currentColor != null) {
-//                        toBeRemoved.addAll(currentEntities);
                         for (int removedX = x - 1; removedX >= x - sameInARow; removedX--) {
                             fieldToBeRemoved[y][removedX] = true;
                         }
                     }
-//                    currentEntities.clear();
-//                    currentEntities.add(entityAt(x, y));
                     sameInARow = 1;
                     currentColor = getFieldColor(x, y);
                 } else if (getFieldColor(x, y) == currentColor) {
                     if (currentColor != null) {
-//                        currentEntities.add(entityAt(x, y));
                         sameInARow++;
                     }
                 }
             }
             if (sameInARow >= 4 && currentColor != null) {
-//                toBeRemoved.addAll(currentEntities);
                 for (int removedX = sizeX - 2; removedX >= sizeX - sameInARow - 1; removedX--) {
                     fieldToBeRemoved[y][removedX] = true;
                 }
             }
-//            currentEntities.clear();
             sameInARow = 1;
             currentColor = null;
         }
@@ -137,58 +133,24 @@ public class World {
             for (int y = 0; y < sizeY; y++) {
                 if (getFieldColor(x, y) != currentColor) {
                     if (sameInARow >= 4 && currentColor != null) {
-//                        toBeRemoved.addAll(currentEntities);
                         for (int removedY = y - 1; removedY >= y - sameInARow; removedY--) {
                             fieldToBeRemoved[removedY][x] = true;
                         }
                     }
-//                    currentEntities.clear();
-//                    currentEntities.add(entityAt(x, y));
                     sameInARow = 1;
                     currentColor = getFieldColor(x, y);
                 } else if (getFieldColor(x, y) == currentColor) {
                     if (currentColor != null) {
-//                        currentEntities.add(entityAt(x, y));
                         sameInARow++;
                     }
                 }
             }
             if (sameInARow >= 4 && currentColor != null) {
-//                toBeRemoved.addAll(currentEntities);
                 for (int removedY = sizeY - 2; removedY >= sizeY - sameInARow - 1; removedY--) {
                     fieldToBeRemoved[removedY][x] = true;
                 }
             }
-//            currentEntities.clear();
-//            sameInARow = 1;
-//            currentColor = null;
         }
-
-//        for (int x = 0; x < sizeX; x++) {
-//            for (int y = 0; y < sizeY; y++) {
-//                // There is a row of more than 4 entities with the same color
-//                if (field[y][x] != currentColor) {
-//                    if (sameInARow >= 4 && currentColor != null) {
-//                        toBeRemoved.addAll(currentEntities);
-//                    }
-//                    currentEntities.clear();
-//                    currentEntities.add(entityAt(x, y));
-//                    sameInARow = 1;
-//                    currentColor = field[y][x];
-//                } else if (field[y][x] == currentColor) {
-//                    if (currentColor != null) {
-//                        currentEntities.add(entityAt(x, y));
-//                        sameInARow++;
-//                    }
-//                }
-//            }
-//            if (sameInARow >= 4 && currentColor != null) {
-//                toBeRemoved.addAll(currentEntities);
-//            }
-//            currentEntities.clear();
-//            sameInARow = 1;
-//            currentColor = null;
-//        }
 
         boolean wasRemoved = false;
         for (int y = 0; y < sizeY; y++) {
@@ -207,18 +169,18 @@ public class World {
                         for (Pill pill : pills) {
                             if (pill.getBlockNorth() == entity) {
                                 DoubleBlock block = pill.getBlockSouth();
-                                SingleBlock newBlock = new SingleBlock((int) block.getX(),
-                                        (int) block.getY(), block.getColor());
+                                SingleBlock newBlock = new SingleBlock(block.getX(),
+                                        block.getY(), block.getR(), block.getColor());
                                 singleBlocks.add(newBlock);
-                                field[(int)newBlock.getY()][(int)newBlock.getX()] = newBlock;
+                                field[(int) newBlock.getY()][(int) newBlock.getX()] = newBlock;
                                 pillsToBeRemoved.add(pill);
                             }
                             if (pill.getBlockSouth() == entity) {
                                 DoubleBlock block = pill.getBlockNorth();
-                                SingleBlock newBlock = new SingleBlock((int) block.getX(),
-                                        (int) block.getY(), block.getColor());
+                                SingleBlock newBlock = new SingleBlock(block.getX(),
+                                        block.getY(), block.getR(), block.getColor());
                                 singleBlocks.add(newBlock);
-                                field[(int)newBlock.getY()][(int)newBlock.getX()] = newBlock;
+                                field[(int) newBlock.getY()][(int) newBlock.getX()] = newBlock;
                                 pillsToBeRemoved.add(pill);
                             }
                         }
@@ -228,40 +190,8 @@ public class World {
                     }
                 }
             }
-
-//        for (Entity entity : toBeRemoved) {
-//            if (entity instanceof Virus) {
-//                viruses.remove(entity);
-//            }
-//            if (entity instanceof SingleBlock) {
-//                singleBlocks.remove(entity);
-//            }
-//            ArrayList<Pill> pillsToBeRemoved = new ArrayList<Pill>();
-//            if (entity instanceof DoubleBlock) {
-//                for (Pill pill : pills) {
-//                    if (pill.getBlockNorth() == entity) {
-//                        DoubleBlock block = pill.getBlockSouth();
-//                        SingleBlock newBlock = new SingleBlock((int) block.getX(),
-//                                (int) block.getY(), block.getColor());
-//                        singleBlocks.add(newBlock);
-//                        pillsToBeRemoved.add(pill);
-//                    }
-//                    if (pill.getBlockSouth() == entity) {
-//                        DoubleBlock block = pill.getBlockNorth();
-//                        SingleBlock newBlock = new SingleBlock((int) block.getX(),
-//                                (int) block.getY(), block.getColor());
-//                        singleBlocks.add(newBlock);
-//                        pillsToBeRemoved.add(pill);
-//                    }
-//                }
-//                for (Pill pill : pillsToBeRemoved) {
-//                    pills.remove(pill);
-//                }
-//            }
-//        }
         }
 
-//        return !toBeRemoved.isEmpty();
         updateField();
         return wasRemoved;
     }
@@ -296,49 +226,30 @@ public class World {
     }
 
     public TexturedEntity entityAt(int x, int y) {
-        if(x >= 0 && x < sizeX && y >= 0 && y < sizeY) {
+        if (x >= 0 && x < sizeX && y >= 0 && y < sizeY) {
             return field[y][x];
         } else {
             return null;
         }
-//        for (Block block : singleBlocks) {
-//            if (block.getX() == x && block.getY() == y) {
-//                return block;
-//            }
-//        }
-//        for (Virus virus : viruses) {
-//            if (virus.getX() == x && virus.getY() == y) {
-//                return virus;
-//            }
-//        }
-//        for (Pill pill : pills) {
-//            int rotation = (int) pill.getR();
-//            // The pill is positioned vertically
-//            if (rotation == 0 || rotation == 180) {
-//                // Lower DoubleBlock
-//                if (pill.getX() == x && pill.getY() == y) {
-//                    return rotation == 0 ? pill.getBlockSouth() : pill.getBlockNorth();
-//                }
-//                // Upper DoubleBlock
-//                if (pill.getX() == x && pill.getY() + 1 == y) {
-//                    return rotation == 0 ? pill.getBlockNorth() : pill.getBlockSouth();
-//                }
-//            } else {    // The pill is positioned horizontally
-//                // Left DoubleBlock
-//                if (pill.getX() == x && pill.getY() == y) {
-//                    return rotation == 90 ? pill.getBlockSouth() : pill.getBlockNorth();
-//                }
-//                // Right DoubleBlock
-//                if (pill.getX() + 1 == x && pill.getY() == y) {
-//                    return rotation == 90 ? pill.getBlockNorth() : pill.getBlockSouth();
-//                }
-//            }
-//        }
-//        return null;
     }
 
     public TexturedEntity entityAt(float x, float y) {
         return entityAt((int) x, (int) y);
+    }
+
+    @Override
+    public String toString() {
+        String fieldString = "\n";
+        for (int y = sizeY - 1; y >= 0; y--) {
+            for (int x = 0; x < sizeX; x++) {
+                fieldString += field[y][x] == null ? "_" : field[y][x].toStringType();
+            }
+            fieldString += "\n";
+        }
+        fieldString += "\n";
+        fieldString += "\n";
+        fieldString += "\n";
+        return fieldString;
     }
 
     private Global.BLOCK_COLOR getFieldColor(int x, int y) {
@@ -375,6 +286,7 @@ public class World {
 
     public void addPill(Pill pill) {
         pills.add(pill);
+        Log.println(Log.INFO, "Game", "landed: " + pill.toString());
     }
 
 }

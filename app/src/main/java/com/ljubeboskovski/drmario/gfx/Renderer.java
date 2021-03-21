@@ -23,8 +23,8 @@ import java.util.concurrent.locks.ReadWriteLock;
 
 public class Renderer implements GLSurfaceView.Renderer {
 
-    private Context context;
-    private ReadWriteLock lock;
+    private final Context context;
+    private final ReadWriteLock lock;
 
     private TextureShader textureShader;
     private Loader loader;
@@ -51,21 +51,6 @@ public class Renderer implements GLSurfaceView.Renderer {
         lock.readLock().lock();
         try {
             Global.MODEL.initWorldTextures(loader, textureMap);
-//            for (Block block : game.getWorld().getBlocks()) {
-//                loader.loadToVAO(block, textureMap);
-//            }
-//            for (Virus virus : game.getWorld().getViruses()) {
-//                loader.loadToVAO(virus, textureMap);
-//            }
-//            for (Pill pill : game.getWorld().getPills()) {
-//                loader.loadToVAO(pill.getBlockNorth(), textureMap);
-//                loader.loadToVAO(pill.getBlockSouth(), textureMap);
-//            }
-//            Pill pill = game.getControlledPill();
-//            if (pill != null) {
-//                loader.loadToVAO(pill.getBlockNorth(), textureMap);
-//                loader.loadToVAO(pill.getBlockSouth(), textureMap);
-//            }
             game.createWorld();
         } finally {
             lock.readLock().unlock();
@@ -149,7 +134,6 @@ public class Renderer implements GLSurfaceView.Renderer {
         // Enable alpha blending
         GLES30.glEnable(GLES30.GL_BLEND);
         GLES30.glBlendFunc(GLES30.GL_SRC_ALPHA, GLES30.GL_ONE_MINUS_SRC_ALPHA);
-
     }
 
     public void setGame(Game game) {
