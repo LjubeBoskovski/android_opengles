@@ -12,6 +12,7 @@ import com.ljubeboskovski.drmario.R;
 import com.ljubeboskovski.drmario.game.entity.Pill;
 import com.ljubeboskovski.drmario.game.entity.Virus;
 import com.ljubeboskovski.drmario.game.entity.block.Block;
+import com.ljubeboskovski.drmario.game.entity.wall.Wall;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
 import com.ljubeboskovski.drmario.gfx.shader.ShaderProgram;
 import com.ljubeboskovski.drmario.gfx.shader.TextureShader;
@@ -44,13 +45,13 @@ public class Renderer implements GLSurfaceView.Renderer {
         textureShader = new TextureShader(context);
         loader = new Loader(context);
         game.setLoader(loader);
-        camera = new Camera();
+        camera = new Camera(Global.WORLD_SIZE_X, Global.WORLD_SIZE_Y);
 
         textureMap = new TextureMap(8, loader.loadTexture(R.drawable.blocks_spritemap));
 
         lock.readLock().lock();
         try {
-            Global.MODEL.initWorldTextures(loader, textureMap);
+            Global.Model.initWorldTextures(loader, textureMap);
             game.createWorld();
         } finally {
             lock.readLock().unlock();
@@ -83,6 +84,10 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     private void draw() {
         textureShader.start();
+
+        for(Wall wall : game.getWorld().getWalls()) {
+            draw(textureShader, loader, camera, wall.getmMatrix(), wall.getModel());
+        }
 
         for(Block block : game.getWorld().getSingleBlocks()) {
             draw(textureShader, loader, camera, block.getmMatrix(), block.getModel());
@@ -123,7 +128,7 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     private void initGL() {
         // Set the background frame color
-        GLES30.glClearColor(0.2f, 0.0f, 0.1f, 1.0f);
+        GLES30.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         // Use culling to remove back faces.
         GLES30.glEnable(GLES30.GL_CULL_FACE);

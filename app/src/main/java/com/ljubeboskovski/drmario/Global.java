@@ -1,13 +1,9 @@
 package com.ljubeboskovski.drmario;
 
-import android.graphics.Color;
-
 import com.ljubeboskovski.drmario.game.Game;
 import com.ljubeboskovski.drmario.gfx.Loader;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
 import com.ljubeboskovski.drmario.gfx.texture.TextureMap;
-
-import static com.ljubeboskovski.drmario.Global.BLOCK_COLOR.RED;
 
 public class Global {
     public static final int BYTES_PER_FLOAT = 4;
@@ -24,7 +20,11 @@ public class Global {
     public static final float RENDER_ELASTICITY_SCALE = 0.1f;
     public static final float RENDER_ELASTICITY_ROTATE = 0.05f;
 
+    public static final int WORLD_SIZE_X = 9;
+    public static final int WORLD_SIZE_Y = 16;
+
     public static enum BLOCK_COLOR {
+        TRANSPARENT,
         RED,
         YELLOW,
         BLUE,
@@ -39,18 +39,23 @@ public class Global {
     }
 
     public final static class BlockColor {
+        public final static float[] TRANSPARENT = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
+
         public final static float[] RED = new float[]{1.0f, 0.0f, 0.0f, 1.0f};
         public final static float[] YELLOW = new float[]{1.0f, 1.0f, 0.0f, 1.0f};
         public final static float[] BLUE = new float[]{0.0f, 0.0f, 1.0f, 1.0f};
         public final static float[] GREEN = new float[]{0.0f, 1.0f, 0.0f, 1.0f};
 
+
         public final static BLOCK_COLOR getColorFromInt(int i) {
             switch (i) {
                 case 0:
-                    return BLOCK_COLOR.RED;
+                    return BLOCK_COLOR.TRANSPARENT;
                 case 1:
-                    return BLOCK_COLOR.YELLOW;
+                    return BLOCK_COLOR.RED;
                 case 2:
+                    return BLOCK_COLOR.YELLOW;
+                case 3:
                     return BLOCK_COLOR.BLUE;
                 default:
                     return BLOCK_COLOR.GREEN;
@@ -58,12 +63,19 @@ public class Global {
         }
 
         public final static BLOCK_COLOR getRandomColor() {
-            int i = Game.random.nextInt(3);
+            int i = Game.random.nextInt(3) + 1;
             return getColorFromInt(i);
         }
     }
 
-    public static final class MODEL {
+    public static final class Model {
+
+        public static TexturedModel WALL_STRAIGHT;
+        public static TexturedModel WALL_EDGE_INNER;
+        public static TexturedModel WALL_EDGE_OUTER;
+        public static TexturedModel WALL_END_LEFT;
+        public static TexturedModel WALL_END_RIGHT;
+
         public static TexturedModel RED_BLOCK_SINGLE;
         public static TexturedModel RED_BLOCK_DOUBLE;
         public static TexturedModel RED_VIRUS_0;
@@ -84,7 +96,19 @@ public class Global {
         public static TexturedModel GREEN_VIRUS_0;
         public static TexturedModel GREEN_VIRUS_1;
 
+
         public static void initWorldTextures(Loader loader, TextureMap textureMap) {
+            WALL_STRAIGHT = loader.loadToVAO(QuadForm.coordinates, BlockColor.TRANSPARENT,
+                    textureMap.getTexCoordinates(0, 7), QuadForm.indices, textureMap.getTexture());
+            WALL_EDGE_OUTER = loader.loadToVAO(QuadForm.coordinates, BlockColor.TRANSPARENT,
+                    textureMap.getTexCoordinates(1, 7), QuadForm.indices, textureMap.getTexture());
+            WALL_EDGE_INNER = loader.loadToVAO(QuadForm.coordinates, BlockColor.TRANSPARENT,
+                    textureMap.getTexCoordinates(2, 7), QuadForm.indices, textureMap.getTexture());
+            WALL_END_LEFT = loader.loadToVAO(QuadForm.coordinates, BlockColor.TRANSPARENT,
+                    textureMap.getTexCoordinates(3, 7), QuadForm.indices, textureMap.getTexture());
+            WALL_END_RIGHT = loader.loadToVAO(QuadForm.coordinates, BlockColor.TRANSPARENT,
+                    textureMap.getTexCoordinates(4, 7), QuadForm.indices, textureMap.getTexture());
+
             RED_BLOCK_SINGLE = loader.loadToVAO(QuadForm.coordinates, BlockColor.RED,
                     textureMap.getTexCoordinates(0, 0), QuadForm.indices, textureMap.getTexture());
             RED_BLOCK_DOUBLE = loader.loadToVAO(QuadForm.coordinates, BlockColor.RED,

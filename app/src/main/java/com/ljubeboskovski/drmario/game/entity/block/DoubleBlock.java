@@ -6,7 +6,7 @@ public class DoubleBlock extends Block {
 
     public DoubleBlock(float x, float y, float r, Global.BLOCK_COLOR color) {
         super(x, y, r, color);
-        super.model = Global.MODEL.getModel(color, Global.ENTITY_TYPE.DOUBLE);
+        super.model = Global.Model.getModel(color, Global.ENTITY_TYPE.DOUBLE);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class Game {
     }
 
     public void createWorld() {
-        this.world = new World(9, 16);
+        this.world = new World(Global.WORLD_SIZE_X, Global.WORLD_SIZE_Y);
         spawnControlledPill();
     }
 

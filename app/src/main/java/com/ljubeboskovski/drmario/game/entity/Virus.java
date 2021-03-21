@@ -10,8 +10,8 @@ public class Virus extends AnimatedEntity {
 
     public Virus(int x, int y, Global.BLOCK_COLOR color){
         super(x, y, 0, color);
-        TexturedModel texturedModel0 = Global.MODEL.getModel(color, Global.ENTITY_TYPE.VIRUS_0);
-        TexturedModel texturedModel1 = Global.MODEL.getModel(color, Global.ENTITY_TYPE.VIRUS_1);
+        TexturedModel texturedModel0 = Global.Model.getModel(color, Global.ENTITY_TYPE.VIRUS_0);
+        TexturedModel texturedModel1 = Global.Model.getModel(color, Global.ENTITY_TYPE.VIRUS_1);
         super.addModel(texturedModel0);
         super.addModel(texturedModel1);
         numberOfAnimations = 2;

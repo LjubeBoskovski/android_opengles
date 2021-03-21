@@ -23,7 +23,7 @@ public class Camera {
      */
     public float[] mvpMatrix = new float[16];
 
-    public Camera() {
+    public Camera(float x, float y) {
 
         // Position the eye in front of the origin.
         final float eyeX = 0.0f;
@@ -42,13 +42,12 @@ public class Camera {
 
         Matrix.setLookAtM(vMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
 
-
         // Create a new orthographic projection matrix.
-        final float left = 0f;
-        final float right = 9f;
+        final float left = -1f;
+        final float right = (x * 1.5f) - 1;
 
-        final float bottom = 0f;
-        final float top = 16f;
+        final float bottom = (y + 3) - (y * 1.5f);
+        final float top = y + 3;
 
         final float near = 1.0f;
         final float far = 20.0f;

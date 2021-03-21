@@ -11,6 +11,12 @@ import com.ljubeboskovski.drmario.game.entity.Virus;
 import com.ljubeboskovski.drmario.game.entity.block.Block;
 import com.ljubeboskovski.drmario.game.entity.block.DoubleBlock;
 import com.ljubeboskovski.drmario.game.entity.block.SingleBlock;
+import com.ljubeboskovski.drmario.game.entity.wall.Wall;
+import com.ljubeboskovski.drmario.game.entity.wall.WallEdgeInner;
+import com.ljubeboskovski.drmario.game.entity.wall.WallEdgeOuter;
+import com.ljubeboskovski.drmario.game.entity.wall.WallEndLeft;
+import com.ljubeboskovski.drmario.game.entity.wall.WallEndRight;
+import com.ljubeboskovski.drmario.game.entity.wall.WallStraight;
 import com.ljubeboskovski.drmario.gfx.texture.Texture;
 
 import java.util.ArrayList;
@@ -19,6 +25,8 @@ public class World {
 
     private int sizeX, sizeY;
     private int numberOfViruses;
+
+    private ArrayList<Wall> walls = new ArrayList<Wall>();
 
     private ArrayList<Virus> viruses = new ArrayList<Virus>();
     private ArrayList<Pill> pills = new ArrayList<Pill>();
@@ -31,7 +39,44 @@ public class World {
         this.sizeY = sizeY;
         this.numberOfViruses = 8;
         this.field = new TexturedEntity[sizeY][sizeX];
+        createBottle();
         generateBlocks();
+    }
+
+    private void createBottle() {
+        // straights left
+        for (int y = 0; y < Global.WORLD_SIZE_Y; y++) {
+            walls.add(new WallStraight(-1, y, 180));
+        }
+        // straights bottom
+        for (int x = 0; x < Global.WORLD_SIZE_X; x++) {
+            walls.add(new WallStraight(x, -1, 270));
+        }
+        // straights right
+        for (int y = 0; y < Global.WORLD_SIZE_Y; y++) {
+            walls.add(new WallStraight(Global.WORLD_SIZE_X, y, 0));
+        }
+        // straights top
+        for (int x = 0; x < Global.WORLD_SIZE_X/2 - 2; x++) {
+            walls.add(new WallStraight(x, Global.WORLD_SIZE_Y, 90));
+        }
+        for (int x = Global.WORLD_SIZE_X/2 + 3; x < Global.WORLD_SIZE_X; x++) {
+            walls.add(new WallStraight(x, Global.WORLD_SIZE_Y, 90));
+        }
+
+        // edges
+        walls.add(new WallEdgeInner(-1, -1, 90));
+        walls.add(new WallEdgeInner(Global.WORLD_SIZE_X, -1, 180));
+        walls.add(new WallEdgeInner(Global.WORLD_SIZE_X, Global.WORLD_SIZE_Y, 270));
+        walls.add(new WallEdgeInner(-1, Global.WORLD_SIZE_Y, 0));
+        walls.add(new WallEdgeOuter(Global.WORLD_SIZE_X/2 - 2, Global.WORLD_SIZE_Y, 180));
+        walls.add(new WallEdgeOuter(Global.WORLD_SIZE_X/2 + 2, Global.WORLD_SIZE_Y, 90));
+        walls.add(new WallEdgeOuter(Global.WORLD_SIZE_X/2 - 2, Global.WORLD_SIZE_Y + 1, 270));
+        walls.add(new WallEdgeOuter(Global.WORLD_SIZE_X/2 + 2, Global.WORLD_SIZE_Y + 1, 0));
+
+        // ends
+        walls.add(new WallEndLeft(Global.WORLD_SIZE_X/2 - 3, Global.WORLD_SIZE_Y + 1, 180));
+        walls.add(new WallEndRight(Global.WORLD_SIZE_X/2 + 3, Global.WORLD_SIZE_Y + 1, 180));
     }
 
     private void generateBlocks() {
@@ -45,6 +90,9 @@ public class World {
     }
 
     public void update() {
+        for (Wall wall : walls) {
+            wall.update();
+        }
         for (Block block : singleBlocks) {
             block.update();
         }
@@ -266,6 +314,10 @@ public class World {
 
     public int getSizeY() {
         return sizeY;
+    }
+
+    public ArrayList<Wall> getWalls() {
+        return walls;
     }
 
     public ArrayList<SingleBlock> getSingleBlocks() {
