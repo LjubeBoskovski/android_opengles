@@ -21,20 +21,18 @@ public class Game {
 
     public static Random random;
 
-    private Loader loader;
-    private ReadWriteLock lock;
-    private Timer timer;
+    private final ReadWriteLock lock;
+    private final Timer timer;
     private int tickCounter = -1;
     private float stepFrequency = 1.0f;
     private int lastFall = 0;
 
     private World world;
-    private Block selectedBlock = null;
     private Pill controlledPill = null;
 
     public Game(ReadWriteLock lock) {
         this.lock = lock;
-        this.random = new Random();
+        random = new Random();
         this.timer = new Timer("count");
 
     }
@@ -160,7 +158,6 @@ public class Game {
             } else {    // The pill is positioned horizontally
                 if (leftOfPill == null && controlledPill.getX() > 0) {
                     controlledPill.moveLeft();
-                    return;
                 }
             }
         }
@@ -271,6 +268,5 @@ public class Game {
     }
 
     public void setLoader(Loader loader) {
-        this.loader = loader;
     }
 }

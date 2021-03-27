@@ -6,6 +6,7 @@ import javax.microedition.khronos.opengles.GL10;
 import android.content.Context;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.R;
@@ -29,7 +30,8 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     private TextureShader textureShader;
     private Loader loader;
-    private Camera camera;
+    private Camera cameraWorld;
+    private Camera cameraButtons;
     private Game game;
 
     private TextureMap textureMap;
@@ -45,7 +47,25 @@ public class Renderer implements GLSurfaceView.Renderer {
         textureShader = new TextureShader(context);
         loader = new Loader(context);
         game.setLoader(loader);
-        camera = new Camera(Global.WORLD_SIZE_X, Global.WORLD_SIZE_Y);
+
+
+        float worldLeft = -1f;
+        float worldRight = -1 + (float)(Global.WORLD_SIZE_X + 2) * 3f / 2f;
+        float worldPixelPerBlock = (float)Global.DISPLAY_WIDTH/(worldRight - worldLeft);
+        float worldTop = (float)Global.WORLD_SIZE_Y + 4;
+        float worldBottom = worldTop - (float)Global.DISPLAY_HEIGHT/worldPixelPerBlock;
+        cameraWorld = new Camera(worldLeft, worldRight, worldBottom, worldTop);
+
+        float buttonsLeft = -0.5f;
+        float buttonsRight = 8.5f;
+        float buttonsPixelPerBlock = (float)Global.DISPLAY_WIDTH/(buttonsRight - buttonsLeft);
+        float buttonsBottom = 0f;
+        float buttonsTop = (float)Global.DISPLAY_HEIGHT/buttonsPixelPerBlock;
+        Log.i("buttonsLeft", String.valueOf(buttonsLeft));
+        Log.i("buttonsRight", String.valueOf(buttonsRight));
+        Log.i("buttonsBottom", String.valueOf(buttonsBottom));
+        Log.i("buttonsTop", String.valueOf(buttonsTop));
+        cameraButtons = new Camera(buttonsLeft, buttonsRight, buttonsBottom, buttonsTop);
 
         textureMap = new TextureMap(8, loader.loadTexture(R.drawable.blocks_spritemap));
 
@@ -86,26 +106,26 @@ public class Renderer implements GLSurfaceView.Renderer {
         textureShader.start();
 
         for(Wall wall : game.getWorld().getWalls()) {
-            draw(textureShader, loader, camera, wall.getmMatrix(), wall.getModel());
+            draw(textureShader, loader, cameraWorld, wall.getmMatrix(), wall.getModel());
         }
 
         for(Block block : game.getWorld().getSingleBlocks()) {
-            draw(textureShader, loader, camera, block.getmMatrix(), block.getModel());
+            draw(textureShader, loader, cameraWorld, block.getmMatrix(), block.getModel());
         }
         for(Virus virus : game.getWorld().getViruses()) {
-            draw(textureShader, loader, camera, virus.getmMatrix(), virus.getModel());
+            draw(textureShader, loader, cameraWorld, virus.getmMatrix(), virus.getModel());
         }
         for(Pill pill : game.getWorld().getPills()) {
-            draw(textureShader, loader, camera, pill.getBlockNorth().getmMatrix(),
+            draw(textureShader, loader, cameraWorld, pill.getBlockNorth().getmMatrix(),
                     pill.getBlockNorth().getModel());
-            draw(textureShader, loader, camera, pill.getBlockSouth().getmMatrix(),
+            draw(textureShader, loader, cameraWorld, pill.getBlockSouth().getmMatrix(),
                     pill.getBlockSouth().getModel());
         }
         Pill pill = game.getControlledPill();
         if(pill != null) {
-            draw(textureShader, loader, camera, pill.getBlockNorth().getmMatrix(),
+            draw(textureShader, loader, cameraWorld, pill.getBlockNorth().getmMatrix(),
                     pill.getBlockNorth().getModel());
-            draw(textureShader, loader, camera, pill.getBlockSouth().getmMatrix(),
+            draw(textureShader, loader, cameraWorld, pill.getBlockSouth().getmMatrix(),
                     pill.getBlockSouth().getModel());
         }
 

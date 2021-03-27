@@ -134,8 +134,6 @@ public class World {
         for (Block block : singleBlocks) {
             field[(int) block.getY()][(int) block.getX()] = block;
         }
-
-        Log.println(Log.INFO, "World", this.toString());
     }
 
     public boolean updateCleared() {
@@ -338,7 +336,6 @@ public class World {
 
     public void addPill(Pill pill) {
         pills.add(pill);
-        Log.println(Log.INFO, "Game", "landed: " + pill.toString());
     }
 
 }

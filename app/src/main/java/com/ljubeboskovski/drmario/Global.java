@@ -6,6 +6,7 @@ import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
 import com.ljubeboskovski.drmario.gfx.texture.TextureMap;
 
 public class Global {
+
     public static final int BYTES_PER_FLOAT = 4;
     public static final int BYTES_PER_SHORT = 2;
 
@@ -23,12 +24,21 @@ public class Global {
     public static final int WORLD_SIZE_X = 9;
     public static final int WORLD_SIZE_Y = 16;
 
+    public static final int BUTTONS_SIZE_X = 9;
+    public static final int BUTTONS_SIZE_Y = 4;
+
+    public static int DISPLAY_WIDTH = -1;
+    public static int DISPLAY_HEIGHT = -1;
+    public static float DISPLAY_DENSITY = -1f;
+
+
     public static enum BLOCK_COLOR {
         TRANSPARENT,
         RED,
         YELLOW,
         BLUE,
-        GREEN
+        GREEN,
+        PURPLE
     }
 
     public static enum ENTITY_TYPE {
@@ -39,12 +49,12 @@ public class Global {
     }
 
     public final static class BlockColor {
-        public final static float[] TRANSPARENT = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
-
+        public final static float[] TRANSPARENT = new float[]{0.0f, 0.0f, 0.0f, 0.0f};
         public final static float[] RED = new float[]{1.0f, 0.0f, 0.0f, 1.0f};
         public final static float[] YELLOW = new float[]{1.0f, 1.0f, 0.0f, 1.0f};
         public final static float[] BLUE = new float[]{0.0f, 0.0f, 1.0f, 1.0f};
         public final static float[] GREEN = new float[]{0.0f, 1.0f, 0.0f, 1.0f};
+        public final static float[] PURPLE = new float[]{0.647f, 0.0f, 1.0f, 1.0f};
 
 
         public final static BLOCK_COLOR getColorFromInt(int i) {
@@ -57,8 +67,10 @@ public class Global {
                     return BLOCK_COLOR.YELLOW;
                 case 3:
                     return BLOCK_COLOR.BLUE;
-                default:
+                case 4:
                     return BLOCK_COLOR.GREEN;
+                default:
+                    return BLOCK_COLOR.PURPLE;
             }
         }
 
@@ -96,54 +108,63 @@ public class Global {
         public static TexturedModel GREEN_VIRUS_0;
         public static TexturedModel GREEN_VIRUS_1;
 
+        public static TexturedModel BUTTON_MOVE_LEFT;
+        public static TexturedModel BUTTON_MOVE_DOWN;
+        public static TexturedModel BUTTON_MOVE_RIGHT;
+        public static TexturedModel BUTTON_ROTATE_COUNTERCLOCKWISE;
+        public static TexturedModel BUTTON_ROTATE_CLOCKWISE;
+
 
         public static void initWorldTextures(Loader loader, TextureMap textureMap) {
-            WALL_STRAIGHT = loader.loadToVAO(QuadForm.coordinates, BlockColor.TRANSPARENT,
-                    textureMap.getTexCoordinates(0, 7), QuadForm.indices, textureMap.getTexture());
-            WALL_EDGE_OUTER = loader.loadToVAO(QuadForm.coordinates, BlockColor.TRANSPARENT,
-                    textureMap.getTexCoordinates(1, 7), QuadForm.indices, textureMap.getTexture());
-            WALL_EDGE_INNER = loader.loadToVAO(QuadForm.coordinates, BlockColor.TRANSPARENT,
-                    textureMap.getTexCoordinates(2, 7), QuadForm.indices, textureMap.getTexture());
-            WALL_END_LEFT = loader.loadToVAO(QuadForm.coordinates, BlockColor.TRANSPARENT,
-                    textureMap.getTexCoordinates(3, 7), QuadForm.indices, textureMap.getTexture());
-            WALL_END_RIGHT = loader.loadToVAO(QuadForm.coordinates, BlockColor.TRANSPARENT,
-                    textureMap.getTexCoordinates(4, 7), QuadForm.indices, textureMap.getTexture());
+            WALL_STRAIGHT = loader.loadToVAO(FormQuad.coordinates, BlockColor.TRANSPARENT,
+                    textureMap.getTexCoordinates(0, 7), FormQuad.indices, textureMap.getTexture());
+            WALL_EDGE_OUTER = loader.loadToVAO(FormQuad.coordinates, BlockColor.TRANSPARENT,
+                    textureMap.getTexCoordinates(1, 7), FormQuad.indices, textureMap.getTexture());
+            WALL_EDGE_INNER = loader.loadToVAO(FormQuad.coordinates, BlockColor.TRANSPARENT,
+                    textureMap.getTexCoordinates(2, 7), FormQuad.indices, textureMap.getTexture());
+            WALL_END_LEFT = loader.loadToVAO(FormQuad.coordinates, BlockColor.TRANSPARENT,
+                    textureMap.getTexCoordinates(3, 7), FormQuad.indices, textureMap.getTexture());
+            WALL_END_RIGHT = loader.loadToVAO(FormQuad.coordinates, BlockColor.TRANSPARENT,
+                    textureMap.getTexCoordinates(4, 7), FormQuad.indices, textureMap.getTexture());
 
-            RED_BLOCK_SINGLE = loader.loadToVAO(QuadForm.coordinates, BlockColor.RED,
-                    textureMap.getTexCoordinates(0, 0), QuadForm.indices, textureMap.getTexture());
-            RED_BLOCK_DOUBLE = loader.loadToVAO(QuadForm.coordinates, BlockColor.RED,
-                    textureMap.getTexCoordinates(1, 0), QuadForm.indices, textureMap.getTexture());
-            RED_VIRUS_0 = loader.loadToVAO(QuadForm.coordinates, BlockColor.RED,
-                    textureMap.getTexCoordinates(2, 0), QuadForm.indices, textureMap.getTexture());
-            RED_VIRUS_1 = loader.loadToVAO(QuadForm.coordinates, BlockColor.RED,
-                    textureMap.getTexCoordinates(3, 0), QuadForm.indices, textureMap.getTexture());
+            RED_BLOCK_SINGLE = loader.loadToVAO(FormQuad.coordinates, BlockColor.RED,
+                    textureMap.getTexCoordinates(0, 0), FormQuad.indices, textureMap.getTexture());
+            RED_BLOCK_DOUBLE = loader.loadToVAO(FormQuad.coordinates, BlockColor.RED,
+                    textureMap.getTexCoordinates(1, 0), FormQuad.indices, textureMap.getTexture());
+            RED_VIRUS_0 = loader.loadToVAO(FormQuad.coordinates, BlockColor.RED,
+                    textureMap.getTexCoordinates(2, 0), FormQuad.indices, textureMap.getTexture());
+            RED_VIRUS_1 = loader.loadToVAO(FormQuad.coordinates, BlockColor.RED,
+                    textureMap.getTexCoordinates(3, 0), FormQuad.indices, textureMap.getTexture());
 
-            YELLOW_BLOCK_SINGLE = loader.loadToVAO(QuadForm.coordinates, BlockColor.YELLOW,
-                    textureMap.getTexCoordinates(0, 1), QuadForm.indices, textureMap.getTexture());
-            YELLOW_BLOCK_DOUBLE = loader.loadToVAO(QuadForm.coordinates, BlockColor.YELLOW,
-                    textureMap.getTexCoordinates(1, 1), QuadForm.indices, textureMap.getTexture());
-            YELLOW_VIRUS_0 = loader.loadToVAO(QuadForm.coordinates, BlockColor.YELLOW,
-                    textureMap.getTexCoordinates(2, 1), QuadForm.indices, textureMap.getTexture());
-            YELLOW_VIRUS_1 = loader.loadToVAO(QuadForm.coordinates, BlockColor.YELLOW,
-                    textureMap.getTexCoordinates(3, 1), QuadForm.indices, textureMap.getTexture());
+            YELLOW_BLOCK_SINGLE = loader.loadToVAO(FormQuad.coordinates, BlockColor.YELLOW,
+                    textureMap.getTexCoordinates(0, 1), FormQuad.indices, textureMap.getTexture());
+            YELLOW_BLOCK_DOUBLE = loader.loadToVAO(FormQuad.coordinates, BlockColor.YELLOW,
+                    textureMap.getTexCoordinates(1, 1), FormQuad.indices, textureMap.getTexture());
+            YELLOW_VIRUS_0 = loader.loadToVAO(FormQuad.coordinates, BlockColor.YELLOW,
+                    textureMap.getTexCoordinates(2, 1), FormQuad.indices, textureMap.getTexture());
+            YELLOW_VIRUS_1 = loader.loadToVAO(FormQuad.coordinates, BlockColor.YELLOW,
+                    textureMap.getTexCoordinates(3, 1), FormQuad.indices, textureMap.getTexture());
 
-            BLUE_BLOCK_SINGLE = loader.loadToVAO(QuadForm.coordinates, BlockColor.BLUE,
-                    textureMap.getTexCoordinates(0, 2), QuadForm.indices, textureMap.getTexture());
-            BLUE_BLOCK_DOUBLE = loader.loadToVAO(QuadForm.coordinates, BlockColor.BLUE,
-                    textureMap.getTexCoordinates(1, 2), QuadForm.indices, textureMap.getTexture());
-            BLUE_VIRUS_0 = loader.loadToVAO(QuadForm.coordinates, BlockColor.BLUE,
-                    textureMap.getTexCoordinates(2, 2), QuadForm.indices, textureMap.getTexture());
-            BLUE_VIRUS_1 = loader.loadToVAO(QuadForm.coordinates, BlockColor.BLUE,
-                    textureMap.getTexCoordinates(3, 2), QuadForm.indices, textureMap.getTexture());
+            BLUE_BLOCK_SINGLE = loader.loadToVAO(FormQuad.coordinates, BlockColor.BLUE,
+                    textureMap.getTexCoordinates(0, 2), FormQuad.indices, textureMap.getTexture());
+            BLUE_BLOCK_DOUBLE = loader.loadToVAO(FormQuad.coordinates, BlockColor.BLUE,
+                    textureMap.getTexCoordinates(1, 2), FormQuad.indices, textureMap.getTexture());
+            BLUE_VIRUS_0 = loader.loadToVAO(FormQuad.coordinates, BlockColor.BLUE,
+                    textureMap.getTexCoordinates(2, 2), FormQuad.indices, textureMap.getTexture());
+            BLUE_VIRUS_1 = loader.loadToVAO(FormQuad.coordinates, BlockColor.BLUE,
+                    textureMap.getTexCoordinates(3, 2), FormQuad.indices, textureMap.getTexture());
 
-            GREEN_BLOCK_SINGLE = loader.loadToVAO(QuadForm.coordinates, BlockColor.GREEN,
-                    textureMap.getTexCoordinates(0, 3), QuadForm.indices, textureMap.getTexture());
-            GREEN_BLOCK_DOUBLE = loader.loadToVAO(QuadForm.coordinates, BlockColor.GREEN,
-                    textureMap.getTexCoordinates(1, 3), QuadForm.indices, textureMap.getTexture());
-            GREEN_VIRUS_0 = loader.loadToVAO(QuadForm.coordinates, BlockColor.GREEN,
-                    textureMap.getTexCoordinates(2, 3), QuadForm.indices, textureMap.getTexture());
-            GREEN_VIRUS_1 = loader.loadToVAO(QuadForm.coordinates, BlockColor.GREEN,
-                    textureMap.getTexCoordinates(3, 3), QuadForm.indices, textureMap.getTexture());
+            GREEN_BLOCK_SINGLE = loader.loadToVAO(FormQuad.coordinates, BlockColor.GREEN,
+                    textureMap.getTexCoordinates(0, 3), FormQuad.indices, textureMap.getTexture());
+            GREEN_BLOCK_DOUBLE = loader.loadToVAO(FormQuad.coordinates, BlockColor.GREEN,
+                    textureMap.getTexCoordinates(1, 3), FormQuad.indices, textureMap.getTexture());
+            GREEN_VIRUS_0 = loader.loadToVAO(FormQuad.coordinates, BlockColor.GREEN,
+                    textureMap.getTexCoordinates(2, 3), FormQuad.indices, textureMap.getTexture());
+            GREEN_VIRUS_1 = loader.loadToVAO(FormQuad.coordinates, BlockColor.GREEN,
+                    textureMap.getTexCoordinates(3, 3), FormQuad.indices, textureMap.getTexture());
+
+            BUTTON_MOVE_LEFT = loader.loadToVAO(FormRectangle2x1.coordinates, BlockColor.PURPLE,
+                    textureMap.getTexCoordinates(3, 3), FormQuad.indices, textureMap.getTexture());
         }
 
         public static TexturedModel getModel(BLOCK_COLOR color, ENTITY_TYPE entityType) {
@@ -197,7 +218,7 @@ public class Global {
         }
     }
 
-    public static final class QuadForm {
+    public static final class FormQuad {
         public static final float[] coordinates = {
                 -0.5f, -0.5f, 0f,
                 0.5f, -0.5f, 0f,
@@ -205,11 +226,37 @@ public class Global {
                 -0.5f, 0.5f, 0f,
         };
 
+        public static final short[] indices = {
+                0, 1, 3,
+                3, 1, 2
+        };
+    }
+
+    public static final class FormRectangle2x1 {
+        public static final float[] coordinates = {
+                -1f, -0.5f, 0f,
+                1f, -0.5f, 0f,
+                1f, 0.5f, 0f,
+                -1f, 0.5f, 0f,
+        };
 
         public static final short[] indices = {
                 0, 1, 3,
                 3, 1, 2
         };
+    }
 
+    public static final class FormRectangle3x1 {
+        public static final float[] coordinates = {
+                -1.5f, -0.5f, 0f,
+                1.5f, -0.5f, 0f,
+                1.5f, 0.5f, 0f,
+                -1.5f, 0.5f, 0f,
+        };
+
+        public static final short[] indices = {
+                0, 1, 3,
+                3, 1, 2
+        };
     }
 }

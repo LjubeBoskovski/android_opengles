@@ -10,7 +10,6 @@ import com.ljubeboskovski.drmario.input.InputHandler;
 
 public class SurfaceView extends GLSurfaceView {
 
-    private com.ljubeboskovski.drmario.gfx.Renderer renderer;
     private InputHandler inputHandler;
 
     public SurfaceView(Context context) {
@@ -23,7 +22,6 @@ public class SurfaceView extends GLSurfaceView {
 
     // Hides superclass method.
     public void setRenderer(com.ljubeboskovski.drmario.gfx.Renderer renderer) {
-        this.renderer = renderer;
         super.setRenderer(renderer);
     }
 

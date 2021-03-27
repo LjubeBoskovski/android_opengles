@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         surfaceView = new SurfaceView(this);
-//        setViewParameters();
+        setViewParameters();
         setContentView(surfaceView);
 
         // Check if the system supports OpenGL ES 3.0.
@@ -47,8 +47,12 @@ public class MainActivity extends Activity {
             // Try to not loose the context after pause/resume
             surfaceView.setPreserveEGLContextOnPause(true);
 
+            // Set the display metrics as a global variable
             final DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            Global.DISPLAY_WIDTH = displayMetrics.widthPixels;
+            Global.DISPLAY_HEIGHT = displayMetrics.heightPixels;
+            Global.DISPLAY_DENSITY = displayMetrics.density;
 
             // Create the read write lock for thread safety
             ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -62,9 +66,7 @@ public class MainActivity extends Activity {
             renderer.setGame(game);
 
             // Set the Input Handler
-            InputHandler inputHandler = new InputHandler(game, displayMetrics.density,
-                    displayMetrics.widthPixels,
-                    displayMetrics.heightPixels);
+            InputHandler inputHandler = new InputHandler(game);
             surfaceView.setInputHandler(inputHandler);
 
         } else {

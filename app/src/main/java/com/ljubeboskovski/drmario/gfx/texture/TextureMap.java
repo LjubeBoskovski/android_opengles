@@ -1,7 +1,5 @@
 package com.ljubeboskovski.drmario.gfx.texture;
 
-import com.ljubeboskovski.drmario.R;
-
 public class TextureMap {
 
     int size;
@@ -24,11 +22,15 @@ public class TextureMap {
     }
 
     public float[] getTexCoordinates(int x, int y) {
+        return getTexCoordinates(x, y, x + 1, y + 1);
+    }
+
+    public float[] getTexCoordinates(int x1, int y1, int x2, int y2) {
         float[] texCoordinates = {
-                ((float) x) / size, ((float) y + 1) / size,
-                ((float) x + 1) / size, ((float) y + 1) / size,
-                ((float) x + 1) / size, ((float) y) / size,
-                ((float) x) / size, ((float) y) / size
+                ((float) x1) / size, ((float) y2) / size,
+                ((float) x2) / size, ((float) y2) / size,
+                ((float) x2) / size, ((float) y1) / size,
+                ((float) x1) / size, ((float) y1) / size
         };
         return texCoordinates;
     }
