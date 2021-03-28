@@ -7,9 +7,11 @@ import java.util.Arrays;
 
 public class Virus extends AnimatedEntity {
 
+    private Global.BLOCK_COLOR color;
 
     public Virus(int x, int y, Global.BLOCK_COLOR color){
-        super(x, y, 0, color);
+        super(x, y, 0);
+        this.color = color;
         TexturedModel texturedModel0 = Global.Model.getModel(color, Global.ENTITY_TYPE.VIRUS_0);
         TexturedModel texturedModel1 = Global.Model.getModel(color, Global.ENTITY_TYPE.VIRUS_1);
         super.addModel(texturedModel0);
@@ -46,6 +48,9 @@ public class Virus extends AnimatedEntity {
         return "V";
     }
 
+    public Global.BLOCK_COLOR getColor() {
+        return color;
+    }
 
 }
 

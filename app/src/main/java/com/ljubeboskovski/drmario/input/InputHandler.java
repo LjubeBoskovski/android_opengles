@@ -5,11 +5,20 @@ import android.view.MotionEvent;
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.Game;
 
+import java.util.ArrayList;
+
 public class InputHandler {
+
     private final Game game;
+    private ArrayList<Button> buttonsControl = new ArrayList<Button>();
 
     public InputHandler(Game game) {
         this.game = game;
+    }
+
+    public void createButtons () {
+        Button buttonLeft = new Button(2, 1, 0, Global.Model.BUTTON_MOVE_LEFT);
+        buttonsControl.add(buttonLeft);
     }
 
     public void onTouchEvent(MotionEvent event) {
@@ -23,6 +32,12 @@ public class InputHandler {
                 break;
             default:
                 break;
+        }
+    }
+
+    public void update() {
+        for (Button button : buttonsControl) {
+            button.update();
         }
     }
 
@@ -46,5 +61,9 @@ public class InputHandler {
             }
 
         }
+    }
+
+    public ArrayList<Button> getButtonsControl() {
+        return buttonsControl;
     }
 }

@@ -7,8 +7,8 @@ import com.ljubeboskovski.drmario.game.entity.TexturedEntity;
 
 public abstract class Wall extends TexturedEntity {
 
-    Wall(float x, float y, float r, Global.BLOCK_COLOR color) {
-        super(x, y, r, color);
+    Wall(float x, float y, float r) {
+        super(x, y, r);
     }
 
     @Override

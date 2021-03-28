@@ -7,7 +7,6 @@ import com.ljubeboskovski.drmario.game.entity.Entity;
 import com.ljubeboskovski.drmario.game.entity.Pill;
 import com.ljubeboskovski.drmario.game.entity.Virus;
 import com.ljubeboskovski.drmario.game.entity.block.Block;
-import com.ljubeboskovski.drmario.game.entity.block.DoubleBlock;
 import com.ljubeboskovski.drmario.game.entity.block.SingleBlock;
 import com.ljubeboskovski.drmario.game.world.World;
 import com.ljubeboskovski.drmario.gfx.Loader;
@@ -265,8 +264,5 @@ public class Game {
 
     public World getWorld() {
         return world;
-    }
-
-    public void setLoader(Loader loader) {
     }
 }

@@ -24,8 +24,8 @@ public class Global {
     public static final int WORLD_SIZE_X = 9;
     public static final int WORLD_SIZE_Y = 16;
 
-    public static final int BUTTONS_SIZE_X = 9;
-    public static final int BUTTONS_SIZE_Y = 4;
+    public static final int BUTTONS_SIZE_X = 8;
+    public static final int BUTTONS_SIZE_Y = 3;
 
     public static int DISPLAY_WIDTH = -1;
     public static int DISPLAY_HEIGHT = -1;
@@ -33,12 +33,10 @@ public class Global {
 
 
     public static enum BLOCK_COLOR {
-        TRANSPARENT,
         RED,
         YELLOW,
         BLUE,
-        GREEN,
-        PURPLE
+        GREEN
     }
 
     public static enum ENTITY_TYPE {
@@ -49,33 +47,28 @@ public class Global {
     }
 
     public final static class BlockColor {
-        public final static float[] TRANSPARENT = new float[]{0.0f, 0.0f, 0.0f, 0.0f};
         public final static float[] RED = new float[]{1.0f, 0.0f, 0.0f, 1.0f};
         public final static float[] YELLOW = new float[]{1.0f, 1.0f, 0.0f, 1.0f};
         public final static float[] BLUE = new float[]{0.0f, 0.0f, 1.0f, 1.0f};
         public final static float[] GREEN = new float[]{0.0f, 1.0f, 0.0f, 1.0f};
-        public final static float[] PURPLE = new float[]{0.647f, 0.0f, 1.0f, 1.0f};
+        public final static float[] NO_COLOR = new float[]{1.0f, 0.0f, 1.0f, 1.0f};
 
 
         public final static BLOCK_COLOR getColorFromInt(int i) {
             switch (i) {
                 case 0:
-                    return BLOCK_COLOR.TRANSPARENT;
-                case 1:
                     return BLOCK_COLOR.RED;
-                case 2:
+                case 1:
                     return BLOCK_COLOR.YELLOW;
-                case 3:
+                case 2:
                     return BLOCK_COLOR.BLUE;
-                case 4:
-                    return BLOCK_COLOR.GREEN;
                 default:
-                    return BLOCK_COLOR.PURPLE;
+                    return BLOCK_COLOR.GREEN;
             }
         }
 
         public final static BLOCK_COLOR getRandomColor() {
-            int i = Game.random.nextInt(3) + 1;
+            int i = Game.random.nextInt(3);
             return getColorFromInt(i);
         }
     }
@@ -109,22 +102,22 @@ public class Global {
         public static TexturedModel GREEN_VIRUS_1;
 
         public static TexturedModel BUTTON_MOVE_LEFT;
-        public static TexturedModel BUTTON_MOVE_DOWN;
-        public static TexturedModel BUTTON_MOVE_RIGHT;
-        public static TexturedModel BUTTON_ROTATE_COUNTERCLOCKWISE;
-        public static TexturedModel BUTTON_ROTATE_CLOCKWISE;
+//        public static TexturedModel BUTTON_MOVE_DOWN;
+//        public static TexturedModel BUTTON_MOVE_RIGHT;
+//        public static TexturedModel BUTTON_ROTATE_COUNTERCLOCKWISE;
+//        public static TexturedModel BUTTON_ROTATE_CLOCKWISE;
 
 
         public static void initWorldTextures(Loader loader, TextureMap textureMap) {
-            WALL_STRAIGHT = loader.loadToVAO(FormQuad.coordinates, BlockColor.TRANSPARENT,
+            WALL_STRAIGHT = loader.loadToVAO(FormQuad.coordinates, BlockColor.NO_COLOR,
                     textureMap.getTexCoordinates(0, 7), FormQuad.indices, textureMap.getTexture());
-            WALL_EDGE_OUTER = loader.loadToVAO(FormQuad.coordinates, BlockColor.TRANSPARENT,
+            WALL_EDGE_OUTER = loader.loadToVAO(FormQuad.coordinates, BlockColor.NO_COLOR,
                     textureMap.getTexCoordinates(1, 7), FormQuad.indices, textureMap.getTexture());
-            WALL_EDGE_INNER = loader.loadToVAO(FormQuad.coordinates, BlockColor.TRANSPARENT,
+            WALL_EDGE_INNER = loader.loadToVAO(FormQuad.coordinates, BlockColor.NO_COLOR,
                     textureMap.getTexCoordinates(2, 7), FormQuad.indices, textureMap.getTexture());
-            WALL_END_LEFT = loader.loadToVAO(FormQuad.coordinates, BlockColor.TRANSPARENT,
+            WALL_END_LEFT = loader.loadToVAO(FormQuad.coordinates, BlockColor.NO_COLOR,
                     textureMap.getTexCoordinates(3, 7), FormQuad.indices, textureMap.getTexture());
-            WALL_END_RIGHT = loader.loadToVAO(FormQuad.coordinates, BlockColor.TRANSPARENT,
+            WALL_END_RIGHT = loader.loadToVAO(FormQuad.coordinates, BlockColor.NO_COLOR,
                     textureMap.getTexCoordinates(4, 7), FormQuad.indices, textureMap.getTexture());
 
             RED_BLOCK_SINGLE = loader.loadToVAO(FormQuad.coordinates, BlockColor.RED,
@@ -163,8 +156,9 @@ public class Global {
             GREEN_VIRUS_1 = loader.loadToVAO(FormQuad.coordinates, BlockColor.GREEN,
                     textureMap.getTexCoordinates(3, 3), FormQuad.indices, textureMap.getTexture());
 
-            BUTTON_MOVE_LEFT = loader.loadToVAO(FormRectangle2x1.coordinates, BlockColor.PURPLE,
-                    textureMap.getTexCoordinates(3, 3), FormQuad.indices, textureMap.getTexture());
+            BUTTON_MOVE_LEFT = loader.loadToVAO(FormRectangle2x1.coordinates, BlockColor.NO_COLOR,
+                    textureMap.getTexCoordinates(0, 6, 2, 7), FormRectangle2x1.indices,
+                    textureMap.getTexture());
         }
 
         public static TexturedModel getModel(BLOCK_COLOR color, ENTITY_TYPE entityType) {

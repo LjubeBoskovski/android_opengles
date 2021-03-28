@@ -5,7 +5,7 @@ import com.ljubeboskovski.drmario.Global;
 public class WallStraight extends Wall {
 
     public WallStraight(float x, float y, float r) {
-        super(x, y, r, Global.BLOCK_COLOR.TRANSPARENT);
+        super(x, y, r);
         super.model = Global.Model.WALL_STRAIGHT;
     }
 

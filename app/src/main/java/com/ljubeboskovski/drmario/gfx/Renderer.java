@@ -19,6 +19,8 @@ import com.ljubeboskovski.drmario.gfx.shader.ShaderProgram;
 import com.ljubeboskovski.drmario.gfx.shader.TextureShader;
 import com.ljubeboskovski.drmario.game.Game;
 import com.ljubeboskovski.drmario.gfx.texture.TextureMap;
+import com.ljubeboskovski.drmario.input.Button;
+import com.ljubeboskovski.drmario.input.InputHandler;
 
 import java.util.concurrent.locks.ReadWriteLock;
 
@@ -28,11 +30,13 @@ public class Renderer implements GLSurfaceView.Renderer {
     private final Context context;
     private final ReadWriteLock lock;
 
+    private Game game;
+    private InputHandler inputHandler;
+
     private TextureShader textureShader;
     private Loader loader;
     private Camera cameraWorld;
     private Camera cameraButtons;
-    private Game game;
 
     private TextureMap textureMap;
 
@@ -46,8 +50,8 @@ public class Renderer implements GLSurfaceView.Renderer {
 
         textureShader = new TextureShader(context);
         loader = new Loader(context);
-        game.setLoader(loader);
 
+        textureMap = new TextureMap(8, loader.loadTexture(R.drawable.blocks_spritemap));
 
         float worldLeft = -1f;
         float worldRight = -1 + (float)(Global.WORLD_SIZE_X + 2) * 3f / 2f;
@@ -56,23 +60,19 @@ public class Renderer implements GLSurfaceView.Renderer {
         float worldBottom = worldTop - (float)Global.DISPLAY_HEIGHT/worldPixelPerBlock;
         cameraWorld = new Camera(worldLeft, worldRight, worldBottom, worldTop);
 
-        float buttonsLeft = -0.5f;
-        float buttonsRight = 8.5f;
+        float buttonsLeft = 0;
+        float buttonsRight = Global.BUTTONS_SIZE_X;
         float buttonsPixelPerBlock = (float)Global.DISPLAY_WIDTH/(buttonsRight - buttonsLeft);
         float buttonsBottom = 0f;
         float buttonsTop = (float)Global.DISPLAY_HEIGHT/buttonsPixelPerBlock;
-        Log.i("buttonsLeft", String.valueOf(buttonsLeft));
-        Log.i("buttonsRight", String.valueOf(buttonsRight));
-        Log.i("buttonsBottom", String.valueOf(buttonsBottom));
-        Log.i("buttonsTop", String.valueOf(buttonsTop));
         cameraButtons = new Camera(buttonsLeft, buttonsRight, buttonsBottom, buttonsTop);
 
-        textureMap = new TextureMap(8, loader.loadTexture(R.drawable.blocks_spritemap));
 
         lock.readLock().lock();
         try {
             Global.Model.initWorldTextures(loader, textureMap);
             game.createWorld();
+            inputHandler.createButtons();
         } finally {
             lock.readLock().unlock();
         }
@@ -88,6 +88,7 @@ public class Renderer implements GLSurfaceView.Renderer {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
         lock.writeLock().lock();
         try{
+            inputHandler.update();
             game.update();
         } finally {
             lock.writeLock().unlock();
@@ -129,6 +130,10 @@ public class Renderer implements GLSurfaceView.Renderer {
                     pill.getBlockSouth().getModel());
         }
 
+        for(Button button : inputHandler.getButtonsControl()) {
+            draw(textureShader, loader, cameraButtons, button.getmMatrix(), button.getModel());
+        }
+
         textureShader.stop();
     }
 
@@ -163,5 +168,9 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public void setInputHandler(InputHandler inputHandler) {
+        this.inputHandler = inputHandler;
     }
 }

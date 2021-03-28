@@ -299,8 +299,10 @@ public class World {
     }
 
     private Global.BLOCK_COLOR getFieldColor(int x, int y) {
-        if (field[y][x] != null) {
-            return field[y][x].getColor();
+        if(field[y][x] instanceof Block) {
+            return ((Block)field[y][x]).getColor();
+        } else if(field[y][x] instanceof Virus) {
+            return ((Virus) field[y][x]).getColor();
         } else {
             return null;
         }
