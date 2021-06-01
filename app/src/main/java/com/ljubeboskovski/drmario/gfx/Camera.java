@@ -1,6 +1,5 @@
 package com.ljubeboskovski.drmario.gfx;
 
-import android.opengl.GLES30;
 import android.opengl.Matrix;
 
 public class Camera {

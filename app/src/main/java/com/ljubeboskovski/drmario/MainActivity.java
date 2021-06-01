@@ -66,9 +66,10 @@ public class MainActivity extends Activity {
             renderer.setGame(game);
 
             // Set the Input Handler
-            InputHandler inputHandler = new InputHandler(game);
+            InputHandler inputHandler = new InputHandler(game, renderer, lock);
             surfaceView.setInputHandler(inputHandler);
             renderer.setInputHandler(inputHandler);
+            game.setInputHandler(inputHandler);
 
         } else {
             Log.println(Log.ERROR, "MainActivity", "OpenGLES 3.0 not supported");

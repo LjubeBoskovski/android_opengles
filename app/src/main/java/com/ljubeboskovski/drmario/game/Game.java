@@ -1,15 +1,12 @@
 package com.ljubeboskovski.drmario.game;
 
-import android.util.Log;
-
 import com.ljubeboskovski.drmario.Global;
 import com.ljubeboskovski.drmario.game.entity.Entity;
 import com.ljubeboskovski.drmario.game.entity.Pill;
 import com.ljubeboskovski.drmario.game.entity.Virus;
-import com.ljubeboskovski.drmario.game.entity.block.Block;
 import com.ljubeboskovski.drmario.game.entity.block.SingleBlock;
 import com.ljubeboskovski.drmario.game.world.World;
-import com.ljubeboskovski.drmario.gfx.Loader;
+import com.ljubeboskovski.drmario.input.InputHandler;
 
 import java.util.Random;
 import java.util.Timer;
@@ -20,10 +17,12 @@ public class Game {
 
     public static Random random;
 
+    private InputHandler inputHandler;
+
     private final ReadWriteLock lock;
     private final Timer timer;
     private int tickCounter = -1;
-    private float stepFrequency = 1.0f;
+    private float stepFrequency = 2.0f;
     private int lastFall = 0;
 
     private World world;
@@ -70,6 +69,7 @@ public class Game {
                 for (Pill pill : world.getPills()) {
                     pill.tick();
                 }
+                inputHandler.tick();
             } finally {
                 lock.writeLock().unlock();
             }
@@ -244,18 +244,10 @@ public class Game {
 
     public void update() {
         world.update();
+        inputHandler.update();
         if (controlledPill != null) {
             controlledPill.update();
         }
-    }
-
-    private Block getSelectedBlock(int x, int y) {
-        for (Block block : world.getSingleBlocks()) {
-            if (block.getX() == x && block.getY() == y) {
-                return block;
-            }
-        }
-        return null;
     }
 
     public Pill getControlledPill() {
@@ -265,4 +257,9 @@ public class Game {
     public World getWorld() {
         return world;
     }
+
+    public void setInputHandler(InputHandler inputHandler) {
+        this.inputHandler = inputHandler;
+    }
+
 }

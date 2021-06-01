@@ -1,5 +1,7 @@
 package com.ljubeboskovski.drmario;
 
+import android.util.Log;
+
 import com.ljubeboskovski.drmario.game.Game;
 import com.ljubeboskovski.drmario.gfx.Loader;
 import com.ljubeboskovski.drmario.gfx.model.TexturedModel;
@@ -18,7 +20,7 @@ public class Global {
 //    public static final int STRIDE = (SIZE_POSITION + SIZE_COLOR + SIZE_TEXTURE_COORDS) * BYTES_PER_FLOAT;
 
     public static final float RENDER_ELASTICITY_TRANSLATE = 0.25f;
-    public static final float RENDER_ELASTICITY_SCALE = 0.1f;
+    public static final float RENDER_ELASTICITY_SCALE = 0.07f;
     public static final float RENDER_ELASTICITY_ROTATE = 0.05f;
 
     public static final int WORLD_SIZE_X = 9;
@@ -102,10 +104,10 @@ public class Global {
         public static TexturedModel GREEN_VIRUS_1;
 
         public static TexturedModel BUTTON_MOVE_LEFT;
-//        public static TexturedModel BUTTON_MOVE_DOWN;
-//        public static TexturedModel BUTTON_MOVE_RIGHT;
-//        public static TexturedModel BUTTON_ROTATE_COUNTERCLOCKWISE;
-//        public static TexturedModel BUTTON_ROTATE_CLOCKWISE;
+        public static TexturedModel BUTTON_MOVE_DOWN;
+        public static TexturedModel BUTTON_MOVE_RIGHT;
+        public static TexturedModel BUTTON_ROTATE_COUNTERCLOCKWISE;
+        public static TexturedModel BUTTON_ROTATE_CLOCKWISE;
 
 
         public static void initWorldTextures(Loader loader, TextureMap textureMap) {
@@ -156,9 +158,25 @@ public class Global {
             GREEN_VIRUS_1 = loader.loadToVAO(FormQuad.coordinates, BlockColor.GREEN,
                     textureMap.getTexCoordinates(3, 3), FormQuad.indices, textureMap.getTexture());
 
+            Log.println(Log.INFO, "button load to vao", "loading");
+
             BUTTON_MOVE_LEFT = loader.loadToVAO(FormRectangle2x1.coordinates, BlockColor.NO_COLOR,
                     textureMap.getTexCoordinates(0, 6, 2, 7), FormRectangle2x1.indices,
                     textureMap.getTexture());
+            BUTTON_MOVE_DOWN = loader.loadToVAO(FormRectangle2x1.coordinates, BlockColor.NO_COLOR,
+                    textureMap.getTexCoordinates(2, 6, 4, 7), FormRectangle2x1.indices,
+                    textureMap.getTexture());
+            BUTTON_MOVE_RIGHT = loader.loadToVAO(FormRectangle2x1.coordinates, BlockColor.NO_COLOR,
+                    textureMap.getTexCoordinates(4, 6, 6, 7), FormRectangle2x1.indices,
+                    textureMap.getTexture());
+            BUTTON_ROTATE_COUNTERCLOCKWISE = loader.loadToVAO(FormRectangle3x1.coordinates, BlockColor.NO_COLOR,
+                    textureMap.getTexCoordinates(0, 5, 3, 6), FormRectangle3x1.indices,
+                    textureMap.getTexture());
+            BUTTON_ROTATE_CLOCKWISE = loader.loadToVAO(FormRectangle3x1.coordinates, BlockColor.NO_COLOR,
+                    textureMap.getTexCoordinates(3, 5, 6, 6), FormRectangle3x1.indices,
+                    textureMap.getTexture());
+
+            Log.println(Log.INFO, "button load to vao", "loaded");
         }
 
         public static TexturedModel getModel(BLOCK_COLOR color, ENTITY_TYPE entityType) {

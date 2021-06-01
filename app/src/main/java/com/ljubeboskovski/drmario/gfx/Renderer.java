@@ -65,6 +65,8 @@ public class Renderer implements GLSurfaceView.Renderer {
         float buttonsPixelPerBlock = (float)Global.DISPLAY_WIDTH/(buttonsRight - buttonsLeft);
         float buttonsBottom = 0f;
         float buttonsTop = (float)Global.DISPLAY_HEIGHT/buttonsPixelPerBlock;
+        Log.println(Log.DEBUG, "cameraButtons",
+                "[" + buttonsLeft + ", " + buttonsRight + ", " + buttonsBottom + ", " + buttonsTop + "]");
         cameraButtons = new Camera(buttonsLeft, buttonsRight, buttonsBottom, buttonsTop);
 
 
@@ -88,7 +90,6 @@ public class Renderer implements GLSurfaceView.Renderer {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
         lock.writeLock().lock();
         try{
-            inputHandler.update();
             game.update();
         } finally {
             lock.writeLock().unlock();
@@ -172,5 +173,9 @@ public class Renderer implements GLSurfaceView.Renderer {
 
     public void setInputHandler(InputHandler inputHandler) {
         this.inputHandler = inputHandler;
+    }
+
+    public Camera getCameraButtons() {
+        return cameraButtons;
     }
 }

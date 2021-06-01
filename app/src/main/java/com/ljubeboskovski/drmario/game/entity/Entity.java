@@ -35,24 +35,24 @@ public abstract class Entity {
     public void update() {
         Matrix.setIdentityM(mMatrix, 0);
         Matrix.translateM(mMatrix, 0, rx + 0.5f, ry + 0.5f, rz);
-        Matrix.scaleM(mMatrix, 0, rs, rs, 0);
+        Matrix.scaleM(mMatrix, 0, rs, rs, 1.0f);
         Matrix.rotateM(mMatrix, 0, rr, 0.0f, 0.0f, 1.0f);
     }
 
     public void tick() {
-        rx = getRenderVariable(x, rx, 1.0f, Global.RENDER_ELASTICITY_TRANSLATE);
-        ry = getRenderVariable(y, ry, 1.0f, Global.RENDER_ELASTICITY_TRANSLATE);
-        rz = getRenderVariable(z, rz, 1.0f, Global.RENDER_ELASTICITY_TRANSLATE);
-        rs = getRenderVariable(s, rs, 1.0f, Global.RENDER_ELASTICITY_SCALE);
+        rx = getRenderVariable(x, rx, Global.RENDER_ELASTICITY_TRANSLATE);
+        ry = getRenderVariable(y, ry, Global.RENDER_ELASTICITY_TRANSLATE);
+        rz = getRenderVariable(z, rz, Global.RENDER_ELASTICITY_TRANSLATE);
+        rs = getRenderVariable(s, rs, Global.RENDER_ELASTICITY_SCALE);
         rr = getRenderVariableRotation(r, rr);
     }
 
-    private float getRenderVariable(float var, float renderVar, float scope, float elasticity) {
+    private float getRenderVariable(float var, float renderVar, float elasticity) {
         float dVar = var - renderVar;
-        if(Math.abs(dVar) < elasticity * scope) {
+        if(Math.abs(dVar) < elasticity) {
             return var;
         } else {
-            return renderVar + (Math.signum(dVar) * elasticity * scope);
+            return renderVar + (Math.signum(dVar) * elasticity);
         }
     }
 
